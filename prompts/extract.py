@@ -23,7 +23,7 @@ import os
 from typing import Optional
 
 import anthropic
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 # ---------------------------------------------------------------------------
 # Schema
@@ -66,6 +66,11 @@ class BillExtraction(BaseModel):
         None,
         description="Flags for ambiguous or missing data the analyst should review",
     )
+
+    @field_validator("service_lines", "diagnosis_codes", mode="before")
+    @classmethod
+    def coerce_null_to_list(cls, v):
+        return [] if v is None else v
 
 
 # ---------------------------------------------------------------------------
