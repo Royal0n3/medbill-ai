@@ -17,7 +17,8 @@
       "Bash(openssl rand:*)",
       "Bash(railway up:*)",
       "Bash(railway status:*)",
-      "Bash(railway service:*)"
+      "Bash(railway service:*)",
+      "Bash(sqlite3 outreach/outreach.db \"DELETE FROM enrollments;\")"
     ]
   }
 }

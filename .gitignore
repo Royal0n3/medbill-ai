@@ -18,6 +18,7 @@ env/
 
 # App runtime data
 medbill.db
+outreach/outreach.db
 /uploads/
 /outputs/
 /logs/
