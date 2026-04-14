@@ -85,6 +85,117 @@ def health() -> Response:
 
 
 # ---------------------------------------------------------------------------
+# GET /stats
+# ---------------------------------------------------------------------------
+
+
+@main.get("/stats")
+def stats() -> Response:
+    """
+    Aggregate metrics for the ops dashboard.
+
+    Response 200
+    ------------
+    {
+      "audits_last_7_days":       12,
+      "total_errors_found":       47,
+      "total_recovery_estimated": 18250.00,
+      "dispute_letters_generated": 23
+    }
+    """
+    db = get_db()
+    row = db.execute("""
+        SELECT
+            (SELECT COUNT(*) FROM bills
+             WHERE created_at >= datetime('now', '-7 days'))          AS audits_last_7_days,
+            (SELECT COALESCE(SUM(error_count), 0) FROM errors)        AS total_errors_found,
+            (SELECT COALESCE(SUM(total_estimated_recovery), 0.0)
+             FROM errors)                                              AS total_recovery_estimated,
+            (SELECT COALESCE(SUM(letter_count), 0) FROM disputes)     AS dispute_letters_generated
+    """).fetchone()
+
+    return jsonify({
+        "audits_last_7_days":        row["audits_last_7_days"],
+        "total_errors_found":        row["total_errors_found"],
+        "total_recovery_estimated":  round(row["total_recovery_estimated"], 2),
+        "dispute_letters_generated": row["dispute_letters_generated"],
+    })
+
+
+# ---------------------------------------------------------------------------
+# GET /audits
+# ---------------------------------------------------------------------------
+
+
+@main.get("/audits")
+def audits_list() -> Response:
+    """
+    Recent audits for the ops dashboard table (latest 50).
+
+    Response 200
+    ------------
+    {
+      "audits": [
+        {
+          "bill_id":            "<uuid>",
+          "practice_name":      "Lakeside Family Practice",
+          "submitted_date":     "2024-01-15 10:30:00",
+          "errors_found":       3,
+          "recovery_estimated": 1250.00,
+          "status":             "disputed" | "analyzed" | "pending"
+        },
+        ...
+      ]
+    }
+    """
+    db = get_db()
+    rows = db.execute("""
+        SELECT
+            b.id,
+            b.extracted_json,
+            b.created_at,
+            e.error_count,
+            e.total_estimated_recovery,
+            CASE
+                WHEN d.id IS NOT NULL THEN 'disputed'
+                WHEN e.id IS NOT NULL THEN 'analyzed'
+                ELSE 'pending'
+            END AS status
+        FROM bills b
+        LEFT JOIN (
+            SELECT e1.bill_id, e1.id, e1.error_count, e1.total_estimated_recovery
+            FROM errors e1
+            WHERE e1.created_at = (
+                SELECT MAX(e2.created_at) FROM errors e2 WHERE e2.bill_id = e1.bill_id
+            )
+        ) e ON e.bill_id = b.id
+        LEFT JOIN (
+            SELECT d1.bill_id, d1.id
+            FROM disputes d1
+            WHERE d1.created_at = (
+                SELECT MAX(d2.created_at) FROM disputes d2 WHERE d2.bill_id = d1.bill_id
+            )
+        ) d ON d.bill_id = b.id
+        ORDER BY b.created_at DESC
+        LIMIT 50
+    """).fetchall()
+
+    result = []
+    for row in rows:
+        extraction: dict[str, Any] = json.loads(row["extracted_json"])
+        result.append({
+            "bill_id":            row["id"],
+            "practice_name":      extraction.get("provider_name") or "Unknown Practice",
+            "submitted_date":     row["created_at"],
+            "errors_found":       row["error_count"] or 0,
+            "recovery_estimated": round(row["total_estimated_recovery"] or 0.0, 2),
+            "status":             row["status"],
+        })
+
+    return jsonify({"audits": result})
+
+
+# ---------------------------------------------------------------------------
 # POST /upload
 # ---------------------------------------------------------------------------
 
