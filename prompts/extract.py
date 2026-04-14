@@ -19,6 +19,7 @@ Usage:
 from __future__ import annotations
 
 import json
+import os
 from typing import Optional
 
 import anthropic
@@ -129,7 +130,8 @@ def extract_bill(raw_text: str, *, client: anthropic.Anthropic | None = None) ->
         pydantic.ValidationError: If the model returns malformed JSON.
     """
     if client is None:
-        client = anthropic.Anthropic()
+        api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+        client = anthropic.Anthropic(api_key=api_key)
 
     response = client.messages.create(
         model="claude-opus-4-6",

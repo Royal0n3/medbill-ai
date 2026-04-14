@@ -17,7 +17,7 @@ def create_app(config_overrides: dict = None) -> Flask:
     # Core configuration
     app.config.update(
         SECRET_KEY=os.environ["FLASK_SECRET_KEY"],
-        ANTHROPIC_API_KEY=os.environ["ANTHROPIC_API_KEY"],
+        ANTHROPIC_API_KEY=os.environ.get("ANTHROPIC_API_KEY", "").strip(),
         BREVO_API_KEY=os.environ.get("BREVO_API_KEY", ""),
         DATABASE=os.path.join(_PROJECT_ROOT, "medbill.db"),
         UPLOAD_FOLDER=os.path.join(_PROJECT_ROOT, "uploads"),

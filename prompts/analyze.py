@@ -25,6 +25,7 @@ Usage:
 from __future__ import annotations
 
 import json
+import os
 from enum import Enum
 from typing import Optional
 
@@ -212,7 +213,8 @@ def analyze_bill(
         AnalysisResult with a list of BillingError findings.
     """
     if client is None:
-        client = anthropic.Anthropic()
+        api_key = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+        client = anthropic.Anthropic(api_key=api_key)
 
     if isinstance(bill_data, BillExtraction):
         bill_json = bill_data.model_dump_json(indent=2)
