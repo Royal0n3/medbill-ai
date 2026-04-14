@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -11,6 +12,7 @@ _PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 def create_app(config_overrides: dict = None) -> Flask:
     """Application factory for the Medical Billing Error Detection service."""
     app = Flask(__name__, instance_relative_config=True)
+    CORS(app, origins=["https://mdbillify.netlify.app", "http://localhost:5000"])
 
     # Core configuration
     app.config.update(

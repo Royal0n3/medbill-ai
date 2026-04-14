@@ -10,7 +10,14 @@
       "Bash(pip show:*)",
       "Bash(git init:*)",
       "Bash(git add:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(railway init:*)",
+      "Bash(npm install:*)",
+      "Bash(railway login:*)",
+      "Bash(openssl rand:*)",
+      "Bash(railway up:*)",
+      "Bash(railway status:*)",
+      "Bash(railway service:*)"
     ]
   }
 }
