@@ -41,6 +41,13 @@ class ServiceLine(BaseModel):
     adjustment_amount: Optional[float] = Field(None, description="Contractual or other adjustments")
     denial_code: Optional[str] = Field(None, description="Denial or remark code, if applicable")
 
+    @field_validator("description", "denial_code", "cpt_code", "date_of_service", mode="before")
+    @classmethod
+    def coerce_list_to_str(cls, v):
+        if isinstance(v, list):
+            return "\n".join(str(item) for item in v if item is not None)
+        return v
+
 
 class BillExtraction(BaseModel):
     provider_name: Optional[str] = Field(None, description="Full name of provider / facility")
@@ -71,6 +78,19 @@ class BillExtraction(BaseModel):
     @classmethod
     def coerce_null_to_list(cls, v):
         return [] if v is None else v
+
+    @field_validator(
+        "provider_name", "provider_npi", "provider_address",
+        "patient_name", "patient_dob", "patient_account_number",
+        "insurance_id", "insurance_plan", "claim_number",
+        "admission_date", "discharge_date", "extraction_notes",
+        mode="before",
+    )
+    @classmethod
+    def coerce_list_to_str(cls, v):
+        if isinstance(v, list):
+            return "\n".join(str(item) for item in v if item is not None)
+        return v
 
 
 # ---------------------------------------------------------------------------
