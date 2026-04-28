@@ -125,13 +125,48 @@ EXTRACTION RULES
 7. **Diagnosis codes.** List all ICD-10 codes found; they are usually in a "Diagnosis" box or \
    listed as "Dx:" near service lines.
 
-8. **Totals cross-check.** After extracting line items, verify that the sum of \
+8. **Payment summary blocks.** Bills often contain a separate summary section (variously labelled \
+   "Payment Summary", "Account Summary", "Statement Summary", "Amount Due", or similar) that is \
+   NOT part of the line-item table. Always scan the full document for this block and map its \
+   values as follows:
+   - "Total Charges" / "Total Billed" / "Gross Charges"  → total_billed
+   - "Insurance Paid" / "Insurance Payment" / "Plan Paid" → total_insurance_paid
+   - "Adjustments" / "Contractual Adjustment"             → note in extraction_notes (no schema field)
+   - "Balance Due" / "Patient Balance" / "Amount Due" / "You Owe" → total_patient_balance
+
+   These values may appear as a small box, a footer table, a bulleted list, or a paragraph — \
+   look for them everywhere, not just in the service-line table.
+
+   EXAMPLE A — tabular summary block:
+   Document text:
+     Payment Summary
+     Total Charges       $1,010.00
+     Insurance Payment     $450.00
+     Adjustments           $150.00
+     Balance Due           $410.00
+   Correct extraction:
+     "total_billed": 1010.00,
+     "total_insurance_paid": 450.00,
+     "total_patient_balance": 410.00,
+     "extraction_notes": "Contractual adjustment of $150.00 noted in Payment Summary."
+
+   EXAMPLE B — inline / paragraph summary:
+   Document text:
+     Your total charges were $3,240.00. Your insurance paid $2,100.00. After a contractual
+     adjustment of $640.00, your balance due is $500.00.
+   Correct extraction:
+     "total_billed": 3240.00,
+     "total_insurance_paid": 2100.00,
+     "total_patient_balance": 500.00,
+     "extraction_notes": "Contractual adjustment of $640.00 noted inline in summary paragraph."
+
+9. **Totals cross-check.** After extracting line items, verify that the sum of \
    billed_amounts equals total_billed. If there is a mismatch, note it in extraction_notes.
 
-9. **No hallucination.** Every value you return must be traceable to the input text. If the \
-   document is unclear, say so in extraction_notes rather than guess.
+10. **No hallucination.** Every value you return must be traceable to the input text. If the \
+    document is unclear, say so in extraction_notes rather than guess.
 
-10. **Output.** Return ONLY the JSON object conforming to the schema. No prose, no markdown \
+11. **Output.** Return ONLY the JSON object conforming to the schema. No prose, no markdown \
     fences, no commentary outside the JSON.
 """
 
