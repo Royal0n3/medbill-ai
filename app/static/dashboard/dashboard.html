@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedBill AI — Operations Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Variables ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:        #0C3B6E;
+      --navy-dark:   #081F3E;
+      --navy-mid:    #1a4f8a;
+      --navy-light:  #2563a8;
+      --teal:        #00C9A7;
+      --teal-dim:    rgba(0, 201, 167, 0.15);
+      --teal-glow:   rgba(0, 201, 167, 0.35);
+      --bg:          #EEF2F7;
+      --surface:     #FFFFFF;
+      --border:      #DDE3EE;
+      --text:        #0D1B2A;
+      --text-muted:  #6B7C93;
+      --text-light:  #9BADC4;
+      --green:       #10B981;
+      --amber:       #F59E0B;
+      --red:         #EF4444;
+      --sidebar-w:   240px;
+      --radius:      10px;
+      --shadow:      0 1px 3px rgba(12,59,110,0.08), 0 4px 16px rgba(12,59,110,0.06);
+      --shadow-md:   0 4px 12px rgba(12,59,110,0.12), 0 8px 32px rgba(12,59,110,0.08);
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Sidebar ───────────────────────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--navy);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      left: 0; top: 0;
+      z-index: 100;
+      overflow: hidden;
+    }
+
+    /* subtle diagonal texture */
+    .sidebar::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: repeating-linear-gradient(
+        135deg,
+        transparent,
+        transparent 40px,
+        rgba(255,255,255,0.015) 40px,
+        rgba(255,255,255,0.015) 80px
+      );
+      pointer-events: none;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+    }
+
+    .sidebar-logo .logo-mark {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-icon {
+      width: 34px; height: 34px;
+      background: var(--teal);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 13px; font-weight: 600;
+      color: var(--navy-dark);
+      letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      display: flex; flex-direction: column; line-height: 1;
+    }
+
+    .logo-text strong {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px; font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.3px;
+    }
+
+    .logo-text span {
+      font-size: 10px; font-weight: 400;
+      color: rgba(255,255,255,0.45);
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-top: 2px;
+    }
+
+    .sidebar-nav {
+      padding: 20px 12px;
+      flex: 1;
+      position: relative;
+    }
+
+    .nav-label {
+      font-size: 9px;
+      font-weight: 600;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      padding: 0 12px;
+      margin-bottom: 8px;
+      margin-top: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 7px;
+      color: rgba(255,255,255,0.65);
+      font-size: 13.5px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+      margin-bottom: 1px;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.07); color: #fff; }
+
+    .nav-item.active {
+      background: rgba(0, 201, 167, 0.12);
+      color: var(--teal);
+      font-weight: 500;
+    }
+
+    .nav-item.active .nav-icon { color: var(--teal); }
+
+    .nav-icon {
+      width: 16px; height: 16px;
+      opacity: 0.8;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+    }
+
+    .refresh-indicator {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .refresh-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--teal);
+      opacity: 0.7;
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.3); }
+    }
+
+    /* ── Main Content ──────────────────────────────────────────────── */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* ── Top Bar ───────────────────────────────────────────────────── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0;
+      z-index: 50;
+    }
+
+    .topbar-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .last-updated {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .refresh-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 7px 14px;
+      font-size: 12.5px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .refresh-btn:hover { background: var(--navy-mid); }
+    .refresh-btn:active { transform: scale(0.97); }
+
+    .refresh-btn svg { transition: transform 0.4s; }
+    .refresh-btn.spinning svg { animation: spin 0.6s linear; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Content Area ──────────────────────────────────────────────── */
+    .content {
+      padding: 28px 32px;
+      flex: 1;
+    }
+
+    /* ── Stats Grid ────────────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.2s, transform 0.2s;
+      animation: card-in 0.4s ease both;
+    }
+
+    .stat-card:nth-child(1) { animation-delay: 0.05s; }
+    .stat-card:nth-child(2) { animation-delay: 0.10s; }
+    .stat-card:nth-child(3) { animation-delay: 0.15s; }
+    .stat-card:nth-child(4) { animation-delay: 0.20s; }
+
+    @keyframes card-in {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .stat-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+
+    .stat-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--teal);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .stat-card:hover::after { opacity: 1; }
+
+    .stat-icon {
+      width: 36px; height: 36px;
+      border-radius: 8px;
+      background: var(--teal-dim);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .stat-icon svg { color: var(--teal); }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 28px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+
+    .stat-value.teal { color: var(--teal); }
+
+    .stat-sub {
+      font-size: 11.5px;
+      color: var(--text-light);
+      margin-top: 6px;
+    }
+
+    /* ── Table Panel ───────────────────────────────────────────────── */
+    .panel {
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      animation: card-in 0.4s ease 0.25s both;
+    }
+
+    .panel-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-title {
+      font-family: 'Sora', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.2px;
+    }
+
+    .panel-count {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      background: var(--bg);
+      color: var(--text-muted);
+      padding: 3px 9px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+    }
+
+    /* ── Table ─────────────────────────────────────────────────────── */
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+    }
+
+    thead th {
+      padding: 11px 20px;
+      text-align: left;
+      font-size: 10.5px;
+      font-weight: 600;
+      letter-spacing: 0.9px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #F0F4F9;
+      transition: background 0.1s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #FAFCFF; }
+
+    tbody td {
+      padding: 13px 20px;
+      vertical-align: middle;
+      color: var(--text);
+    }
+
+    .practice-name {
+      font-weight: 500;
+      font-size: 13.5px;
+      color: var(--navy);
+    }
+
+    .date-cell {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .errors-cell {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 500;
+      font-size: 14px;
+    }
+
+    .errors-cell.has-errors { color: var(--red); }
+    .errors-cell.no-errors  { color: var(--text-light); }
+
+    .recovery-cell {
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--green);
+    }
+
+    .recovery-cell.zero { color: var(--text-light); font-weight: 400; }
+
+    /* ── Status Badges ─────────────────────────────────────────────── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-transform: capitalize;
+      white-space: nowrap;
+    }
+
+    .badge-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .badge.pending  { background: #FEF3C7; color: #92400E; }
+    .badge.pending .badge-dot  { background: var(--amber); }
+    .badge.analyzed { background: #DBEAFE; color: #1E40AF; }
+    .badge.analyzed .badge-dot { background: #3B82F6; }
+    .badge.disputed { background: #D1FAE5; color: #065F46; }
+    .badge.disputed .badge-dot { background: var(--green); }
+
+    /* ── Action Button ─────────────────────────────────────────────── */
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 12px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      color: var(--navy);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+      text-decoration: none;
+    }
+
+    .btn-download:hover {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: #fff;
+    }
+
+    .btn-download:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ── Empty / Loading / Error States ───────────────────────────── */
+    .state-row td {
+      padding: 48px 24px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .state-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .state-msg {
+      font-size: 13.5px;
+      color: var(--text-muted);
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, #f0f4f8 25%, #e4ebf5 50%, #f0f4f8 75%);
+      background-size: 400% 100%;
+      animation: shimmer 1.4s ease infinite;
+      border-radius: 4px;
+      height: 14px;
+      display: inline-block;
+    }
+
+    @keyframes shimmer {
+      0%   { background-position: 100% 0; }
+      100% { background-position: -100% 0; }
+    }
+
+    .skeleton.wide  { width: 140px; }
+    .skeleton.med   { width: 80px; }
+    .skeleton.short { width: 50px; }
+
+    .stat-value .skeleton { height: 28px; border-radius: 4px; }
+
+    /* ── Error Banner ──────────────────────────────────────────────── */
+    .error-banner {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      font-size: 13px;
+      color: #991B1B;
+    }
+
+    .error-banner.visible { display: flex; }
+
+    /* ── Countdown ring ────────────────────────────────────────────── */
+    .countdown-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .countdown-ring {
+      position: relative;
+      width: 22px; height: 22px;
+    }
+
+    .countdown-ring svg {
+      transform: rotate(-90deg);
+    }
+
+    .ring-track {
+      fill: none;
+      stroke: rgba(255,255,255,0.12);
+      stroke-width: 2;
+    }
+
+    .ring-fill {
+      fill: none;
+      stroke: var(--teal);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-dasharray: 56.5;
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 1s linear;
+    }
+
+    .countdown-text {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      color: rgba(255,255,255,0.4);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Sidebar ─────────────────────────────────────────────────────── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-mark">
+      <div class="logo-icon">MB</div>
+      <div class="logo-text">
+        <strong>MedBill AI</strong>
+        <span>Operations</span>
+      </div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Dashboard</div>
+    <a class="nav-item active" href="#">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 6a1 1 0 011-1h6a1 1 0 010 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h6a1 1 0 010 2H4a1 1 0 01-1-1zm10-4a1 1 0 011-1h2a1 1 0 010 2h-2a1 1 0 01-1-1zm0 4a1 1 0 011-1h2a1 1 0 010 2h-2a1 1 0 01-1-1z"/>
+      </svg>
+      Overview
+    </a>
+    <a class="nav-item" href="https://medbill-ai-production.up.railway.app" target="_blank">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+      </svg>
+      Upload Bill
+    </a>
+
+    <div class="nav-label" style="margin-top:20px;">System</div>
+    <a class="nav-item" id="health-nav" href="#">
+      <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
+      </svg>
+      API Health
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="refresh-indicator">
+      <div class="countdown-wrap">
+        <div class="countdown-ring">
+          <svg width="22" height="22" viewBox="0 0 22 22">
+            <circle class="ring-track" cx="11" cy="11" r="9"/>
+            <circle class="ring-fill" id="ring-fill" cx="11" cy="11" r="9"/>
+          </svg>
+        </div>
+        <div class="countdown-text">
+          Refresh in <span id="countdown-num">60</span>s
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── Main ────────────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <span class="topbar-title">Audit Overview</span>
+    <div class="topbar-right">
+      <span class="last-updated" id="last-updated">—</span>
+      <button class="refresh-btn" id="refresh-btn" onclick="loadAll()">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"/>
+        </svg>
+        Refresh
+      </button>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- Error Banner -->
+    <div class="error-banner" id="error-banner">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+      </svg>
+      <span id="error-msg">Unable to reach backend.</span>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/>
+            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="stat-label">Audits — Last 7 Days</div>
+        <div class="stat-value" id="stat-audits"><span class="skeleton wide"></span></div>
+        <div class="stat-sub">bills submitted</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="stat-label">Errors Found</div>
+        <div class="stat-value" id="stat-errors"><span class="skeleton med"></span></div>
+        <div class="stat-sub">total billing errors</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="stat-label">Recovery Identified</div>
+        <div class="stat-value teal" id="stat-recovery"><span class="skeleton wide"></span></div>
+        <div class="stat-sub">estimated recoverable</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+          </svg>
+        </div>
+        <div class="stat-label">Dispute Letters</div>
+        <div class="stat-value" id="stat-letters"><span class="skeleton short"></span></div>
+        <div class="stat-sub">letters generated</div>
+      </div>
+    </div>
+
+    <!-- Audits Table -->
+    <div class="panel">
+      <div class="panel-header">
+        <span class="panel-title">Recent Audits</span>
+        <span class="panel-count" id="audit-count">—</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Practice / Provider</th>
+              <th>Submitted</th>
+              <th>Errors Found</th>
+              <th>Est. Recovery</th>
+              <th>Status</th>
+              <th>Report</th>
+            </tr>
+          </thead>
+          <tbody id="audits-tbody">
+            <tr class="state-row">
+              <td colspan="6">
+                <div class="state-icon">⏳</div>
+                <div class="state-msg">Loading audits…</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  const BACKEND_URL = 'https://medbill-ai-production.up.railway.app';
+  const REFRESH_INTERVAL = 60; // seconds
+
+  let countdownTimer = null;
+  let countdownVal = REFRESH_INTERVAL;
+  const CIRCUMFERENCE = 2 * Math.PI * 9; // r=9 → ~56.5
+
+  // ── Helpers ──────────────────────────────────────────────────────────
+
+  function fmt(n) {
+    // Animated counter helper — returns plain number string
+    return Number(n).toLocaleString('en-US');
+  }
+
+  function fmtMoney(n) {
+    if (n === 0) return '$0';
+    if (n >= 1000) return '$' + (n / 1000).toFixed(1) + 'k';
+    return '$' + n.toFixed(0);
+  }
+
+  function fmtDate(str) {
+    if (!str) return '—';
+    const d = new Date(str.replace(' ', 'T') + (str.includes('T') ? '' : 'Z'));
+    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function animateCount(el, target, isMoney) {
+    const duration = 700;
+    const start = performance.now();
+    const from = 0;
+    function step(now) {
+      const p = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      const val = from + (target - from) * ease;
+      el.textContent = isMoney ? fmtMoney(val) : fmt(Math.round(val));
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = isMoney ? fmtMoney(target) : fmt(target);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function showError(msg) {
+    document.getElementById('error-banner').classList.add('visible');
+    document.getElementById('error-msg').textContent = msg;
+  }
+
+  function hideError() {
+    document.getElementById('error-banner').classList.remove('visible');
+  }
+
+  // ── Stats ─────────────────────────────────────────────────────────────
+
+  async function loadStats() {
+    try {
+      const res = await fetch(`${BACKEND_URL}/stats`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const d = await res.json();
+      hideError();
+
+      animateCount(document.getElementById('stat-audits'),   d.audits_last_7_days, false);
+      animateCount(document.getElementById('stat-errors'),   d.total_errors_found, false);
+      animateCount(document.getElementById('stat-recovery'), d.total_recovery_estimated, true);
+      animateCount(document.getElementById('stat-letters'),  d.dispute_letters_generated, false);
+    } catch (e) {
+      showError(`Stats unavailable: ${e.message}`);
+    }
+  }
+
+  // ── Audits Table ──────────────────────────────────────────────────────
+
+  function statusBadge(status) {
+    const label = status || 'pending';
+    return `<span class="badge ${label}"><span class="badge-dot"></span>${label}</span>`;
+  }
+
+  function reportBtn(billId, status) {
+    const disabled = status === 'pending' ? 'disabled' : '';
+    const url = `${BACKEND_URL}/report/${billId}/pdf?download=true`;
+    return `
+      <a class="btn-download" href="${disabled ? '#' : url}" target="_blank" ${disabled}
+         title="${disabled ? 'Run analysis first' : 'Download PDF report'}">
+        <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"/>
+        </svg>
+        PDF
+      </a>`;
+  }
+
+  async function loadAudits() {
+    const tbody = document.getElementById('audits-tbody');
+    try {
+      const res = await fetch(`${BACKEND_URL}/audits`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const d = await res.json();
+      const list = d.audits || [];
+
+      document.getElementById('audit-count').textContent =
+        list.length === 1 ? '1 audit' : `${list.length} audits`;
+
+      if (list.length === 0) {
+        tbody.innerHTML = `
+          <tr class="state-row">
+            <td colspan="6">
+              <div class="state-icon">📋</div>
+              <div class="state-msg">No audits yet. Upload a bill to get started.</div>
+            </td>
+          </tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(a => {
+        const errClass = a.errors_found > 0 ? 'has-errors' : 'no-errors';
+        const recClass = a.recovery_estimated > 0 ? '' : 'zero';
+        const recVal   = a.recovery_estimated > 0
+          ? `$${a.recovery_estimated.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+          : '—';
+        return `
+          <tr>
+            <td class="practice-name">${escHtml(a.practice_name)}</td>
+            <td class="date-cell">${fmtDate(a.submitted_date)}</td>
+            <td class="errors-cell ${errClass}">${a.errors_found}</td>
+            <td class="recovery-cell ${recClass}">${recVal}</td>
+            <td>${statusBadge(a.status)}</td>
+            <td>${reportBtn(a.bill_id, a.status)}</td>
+          </tr>`;
+      }).join('');
+
+    } catch (e) {
+      tbody.innerHTML = `
+        <tr class="state-row">
+          <td colspan="6">
+            <div class="state-icon">⚠️</div>
+            <div class="state-msg">Could not load audits: ${escHtml(e.message)}</div>
+          </td>
+        </tr>`;
+    }
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  // ── Countdown ─────────────────────────────────────────────────────────
+
+  function startCountdown() {
+    clearInterval(countdownTimer);
+    countdownVal = REFRESH_INTERVAL;
+    updateRing();
+
+    countdownTimer = setInterval(() => {
+      countdownVal--;
+      updateRing();
+      if (countdownVal <= 0) {
+        countdownVal = REFRESH_INTERVAL;
+        loadAll();
+      }
+    }, 1000);
+  }
+
+  function updateRing() {
+    document.getElementById('countdown-num').textContent = countdownVal;
+    const offset = CIRCUMFERENCE * (1 - countdownVal / REFRESH_INTERVAL);
+    document.getElementById('ring-fill').style.strokeDashoffset = offset;
+  }
+
+  // ── Load All ──────────────────────────────────────────────────────────
+
+  async function loadAll() {
+    const btn = document.getElementById('refresh-btn');
+    btn.classList.add('spinning');
+
+    const now = new Date();
+    document.getElementById('last-updated').textContent =
+      'Updated ' + now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+    await Promise.all([loadStats(), loadAudits()]);
+
+    btn.classList.remove('spinning');
+    startCountdown();
+  }
+
+  // ── Health nav ────────────────────────────────────────────────────────
+
+  document.getElementById('health-nav').addEventListener('click', async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${BACKEND_URL}/health`);
+      const d = await res.json();
+      alert(`API Status: ${d.status === 'ok' ? '✅ OK' : '❌ ' + JSON.stringify(d)}`);
+    } catch (err) {
+      alert(`❌ API unreachable: ${err.message}`);
+    }
+  });
+
+  // ── Init ──────────────────────────────────────────────────────────────
+
+  loadAll();
+</script>
+</body>
+</html>
