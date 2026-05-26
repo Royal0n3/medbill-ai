@@ -45,23 +45,69 @@ def _err(msg: str, status: int = 400) -> tuple[Response, int]:
     return jsonify({"error": msg}), status
 
 
+def _ocr_pdf(data: bytes) -> str:
+    """
+    OCR fallback for image-based PDFs.
+    Converts each page to an image via pdf2image, then runs pytesseract.
+    Returns extracted text or empty string on failure.
+    """
+    try:
+        import pytesseract
+        from pdf2image import convert_from_bytes
+
+        images = convert_from_bytes(data, dpi=300)
+        pages_text = []
+        for image in images:
+            page_text = pytesseract.image_to_string(image, lang="eng")
+            if page_text.strip():
+                pages_text.append(page_text)
+        return "\n\n".join(pages_text)
+    except Exception as exc:
+        current_app.logger.warning("OCR fallback failed: %s", exc)
+        return ""
+
+
 def _extract_text(file: FileStorage) -> tuple[str, str]:
     """
     Return (raw_text, file_type) from an uploaded FileStorage.
 
     file_type is 'pdf' or 'txt'.
-    Raises ValueError if the PDF contains no extractable text.
+
+    Strategy for PDFs:
+      1. Try pdfplumber (text-based PDFs — fast, accurate)
+      2. If no text extracted, fall back to OCR via pytesseract (scanned/image PDFs)
+      3. If OCR also yields nothing, raise ValueError
+
+    Raises ValueError if no text can be extracted at all.
     """
     filename = secure_filename(file.filename or "upload")
     ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else "txt"
 
     if ext == "pdf":
         data = file.read()
-        with pdfplumber.open(io.BytesIO(data)) as pdf:
-            pages = [page.extract_text() or "" for page in pdf.pages]
-        raw = "\n\n".join(p for p in pages if p.strip())
+
+        # --- Step 1: Try pdfplumber (native text extraction) ----------------
+        try:
+            with pdfplumber.open(io.BytesIO(data)) as pdf:
+                pages = [page.extract_text() or "" for page in pdf.pages]
+            raw = "\n\n".join(p for p in pages if p.strip())
+        except Exception:
+            raw = ""
+
+        # --- Step 2: OCR fallback for image-based PDFs ----------------------
         if not raw.strip():
-            raise ValueError("PDF contains no extractable text (may be scanned image).")
+            current_app.logger.info(
+                "No extractable text in PDF — attempting OCR fallback"
+            )
+            raw = _ocr_pdf(data)
+
+        # --- Step 3: Give up if still empty ---------------------------------
+        if not raw.strip():
+            raise ValueError(
+                "Could not extract text from this PDF. "
+                "The file may be corrupted, encrypted, or use an unsupported format."
+            )
+
         return raw, "pdf"
 
     # Plain text (utf-8; replace undecodable bytes rather than crash)
