@@ -139,7 +139,8 @@ EXTRACTION RULES
    recent (or highest-level summary) and note the discrepancy in extraction_notes.
 
 7. **Diagnosis codes.** List all ICD-10 codes found; they are usually in a "Diagnosis" box or \
-   listed as "Dx:" near service lines.
+   listed as "Dx:" near service lines. Return diagnosis_codes as a simple flat list of strings \
+   only — e.g. ["R07.9", "R55", "I10"]. Do NOT return objects or dicts — only plain strings.
 
 8. **Payment summary blocks.** Bills often contain a separate summary section (variously labelled \
    "Payment Summary", "Account Summary", "Statement Summary", "Amount Due", or similar) that is \
