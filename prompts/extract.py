@@ -74,7 +74,23 @@ class BillExtraction(BaseModel):
         description="Flags for ambiguous or missing data the analyst should review",
     )
 
-    @field_validator("service_lines", "diagnosis_codes", mode="before")
+    @field_validator("diagnosis_codes", mode="before")
+    @classmethod
+    def coerce_diagnosis_codes(cls, v):
+        if v is None:
+            return []
+        result = []
+        for item in v:
+            if isinstance(item, dict):
+                # Claude sometimes returns {"code": "R07.9", "sequence": 1, "primary": True}
+                code = item.get("code") or item.get("icd_code") or item.get("icd10") or ""
+                if code:
+                    result.append(str(code))
+            elif item is not None:
+                result.append(str(item))
+        return result
+
+    @field_validator("service_lines", mode="before")
     @classmethod
     def coerce_null_to_list(cls, v):
         return [] if v is None else v
