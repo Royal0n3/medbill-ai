@@ -73,25 +73,20 @@
       overflow: hidden;
     }
 
-    /* Dot-grid ledger pattern */
     .hero::before {
       content: '';
       position: absolute;
       inset: 0;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,0.10) 1px, transparent 1px);
+      background-image: radial-gradient(circle, rgba(255,255,255,0.10) 1px, transparent 1px);
       background-size: 28px 28px;
       pointer-events: none;
     }
 
-    /* Diagonal accent line */
     .hero::after {
       content: '';
       position: absolute;
-      bottom: -60px;
-      right: -60px;
-      width: 320px;
-      height: 320px;
+      bottom: -60px; right: -60px;
+      width: 320px; height: 320px;
       border: 1px solid rgba(196,163,90,0.18);
       border-radius: 50%;
       pointer-events: none;
@@ -107,180 +102,109 @@
     }
 
     .wordmark-icon {
-      width: 36px;
-      height: 36px;
+      width: 36px; height: 36px;
       background: var(--gold);
       border-radius: var(--radius-sm);
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
 
     .wordmark-icon svg { width: 20px; height: 20px; }
 
-    .wordmark-text {
-      display: flex;
-      flex-direction: column;
-      line-height: 1;
-    }
+    .wordmark-text { display: flex; flex-direction: column; line-height: 1; }
 
     .wordmark-primary {
       font-family: var(--font-ui);
-      font-weight: 600;
-      font-size: 15px;
-      color: var(--white);
-      letter-spacing: 0.01em;
+      font-weight: 600; font-size: 15px;
+      color: var(--white); letter-spacing: 0.01em;
     }
 
     .wordmark-secondary {
       font-family: var(--font-mono);
-      font-size: 10px;
-      color: rgba(196,163,90,0.85);
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-top: 3px;
+      font-size: 10px; color: rgba(196,163,90,0.85);
+      letter-spacing: 0.12em; text-transform: uppercase; margin-top: 3px;
     }
 
     .hero-headline {
       font-family: var(--font-display);
       font-weight: 300;
       font-size: clamp(36px, 4vw, 50px);
-      line-height: 1.12;
-      color: var(--white);
-      letter-spacing: -0.01em;
-      margin-bottom: 18px;
+      line-height: 1.12; color: var(--white);
+      letter-spacing: -0.01em; margin-bottom: 18px;
     }
 
-    .hero-headline em {
-      font-style: italic;
-      color: var(--gold-light);
-    }
+    .hero-headline em { font-style: italic; color: var(--gold-light); }
 
     .hero-sub {
-      font-size: 15px;
-      font-weight: 300;
+      font-size: 15px; font-weight: 300;
       color: rgba(255,255,255,0.65);
-      line-height: 1.65;
-      max-width: 340px;
-      margin-bottom: 40px;
+      line-height: 1.65; max-width: 340px; margin-bottom: 40px;
     }
 
-    /* Divider */
     .hero-divider {
-      width: 40px;
-      height: 2px;
-      background: var(--gold);
-      margin-bottom: 36px;
-      border-radius: 2px;
+      width: 40px; height: 2px;
+      background: var(--gold); margin-bottom: 36px; border-radius: 2px;
     }
 
-    /* Trust points */
-    .trust-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
+    .trust-list { list-style: none; display: flex; flex-direction: column; gap: 16px; }
 
-    .trust-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-    }
+    .trust-item { display: flex; align-items: flex-start; gap: 12px; }
 
     .trust-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: rgba(196,163,90,0.15);
-      border: 1px solid rgba(196,163,90,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      margin-top: 1px;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: rgba(196,163,90,0.15); border: 1px solid rgba(196,163,90,0.3);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
     }
 
     .trust-icon svg { width: 13px; height: 13px; color: var(--gold-light); }
 
     .trust-label {
-      font-size: 13.5px;
-      font-weight: 500;
-      color: rgba(255,255,255,0.88);
-      line-height: 1;
-      margin-bottom: 3px;
+      font-size: 13.5px; font-weight: 500;
+      color: rgba(255,255,255,0.88); line-height: 1; margin-bottom: 3px;
     }
 
-    .trust-desc {
-      font-size: 12px;
-      color: rgba(255,255,255,0.45);
-      line-height: 1.4;
-    }
+    .trust-desc { font-size: 12px; color: rgba(255,255,255,0.45); line-height: 1.4; }
 
-    /* Hero footer */
     .hero-foot {
-      position: relative;
-      z-index: 1;
-      padding-top: 32px;
-      border-top: 1px solid rgba(255,255,255,0.10);
+      position: relative; z-index: 1;
+      padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.10);
     }
 
-    .stat-row {
-      display: flex;
-      gap: 32px;
-    }
-
-    .stat-item {}
+    .stat-row { display: flex; gap: 32px; }
 
     .stat-num {
       font-family: var(--font-display);
-      font-size: 28px;
-      font-weight: 600;
-      color: var(--white);
-      line-height: 1;
+      font-size: 28px; font-weight: 600;
+      color: var(--white); line-height: 1;
     }
 
     .stat-label {
-      font-size: 11px;
-      color: rgba(255,255,255,0.45);
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-top: 4px;
+      font-size: 11px; color: rgba(255,255,255,0.45);
+      letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px;
     }
 
     /* ─── Form panel ─────────────────────────────────────────────── */
     .form-panel {
       background: var(--white);
       padding: 48px 52px 48px 56px;
-      display: flex;
-      flex-direction: column;
+      display: flex; flex-direction: column;
       overflow-y: auto;
     }
 
     .form-header { margin-bottom: 32px; }
 
     .form-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--gold);
-      color: var(--navy-deep);
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.10em;
-      text-transform: uppercase;
-      padding: 5px 11px;
-      border-radius: 20px;
-      margin-bottom: 14px;
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--gold); color: var(--navy-deep);
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.10em; text-transform: uppercase;
+      padding: 5px 11px; border-radius: 20px; margin-bottom: 14px;
     }
 
     .form-eyebrow::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      background: var(--navy);
-      border-radius: 50%;
+      content: ''; width: 6px; height: 6px;
+      background: var(--navy); border-radius: 50%;
       animation: pulse-dot 2s ease-in-out infinite;
     }
 
@@ -291,144 +215,68 @@
 
     .form-title {
       font-family: var(--font-display);
-      font-size: 30px;
-      font-weight: 600;
-      color: var(--navy-deep);
-      line-height: 1.15;
-      letter-spacing: -0.01em;
+      font-size: 30px; font-weight: 600;
+      color: var(--navy-deep); line-height: 1.15; letter-spacing: -0.01em;
     }
 
-    .form-subtitle {
-      font-size: 14px;
-      color: var(--gray-400);
-      margin-top: 6px;
-      font-weight: 300;
-    }
+    .form-subtitle { font-size: 14px; color: var(--gray-400); margin-top: 6px; font-weight: 300; }
 
-    /* Section labels */
     .field-section {
-      font-size: 10.5px;
-      font-weight: 600;
-      letter-spacing: 0.10em;
-      text-transform: uppercase;
-      color: var(--navy);
-      margin-bottom: 14px;
-      margin-top: 24px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 10.5px; font-weight: 600; letter-spacing: 0.10em;
+      text-transform: uppercase; color: var(--navy);
+      margin-bottom: 14px; margin-top: 24px;
+      display: flex; align-items: center; gap: 8px;
     }
 
-    .field-section::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--gray-100);
-    }
+    .field-section::after { content: ''; flex: 1; height: 1px; background: var(--gray-100); }
 
-    /* Field groups */
-    .field-grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-
-    .field-grid-3 {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 16px;
-    }
-
+    .field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
     .field-stack { margin-bottom: 0; }
 
-    /* Input styles */
-    .field-wrap {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 16px;
-    }
-
+    .field-wrap { position: relative; display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
     .field-wrap:last-child { margin-bottom: 0; }
 
-    label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--gray-600);
-      letter-spacing: 0.01em;
-    }
-
-    label .req {
-      color: var(--gold);
-      margin-left: 2px;
-    }
+    label { font-size: 12px; font-weight: 500; color: var(--gray-600); letter-spacing: 0.01em; }
+    label .req { color: var(--gold); margin-left: 2px; }
 
     input[type="text"],
     input[type="email"],
     input[type="tel"],
     input[type="number"],
     select {
-      width: 100%;
-      height: 44px;
-      padding: 0 14px;
-      font-family: var(--font-ui);
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--gray-800);
-      background: var(--off-white);
-      border: 1.5px solid var(--gray-100);
-      border-radius: var(--radius-sm);
+      width: 100%; height: 44px; padding: 0 14px;
+      font-family: var(--font-ui); font-size: 14px; font-weight: 400;
+      color: var(--gray-800); background: var(--off-white);
+      border: 1.5px solid var(--gray-100); border-radius: var(--radius-sm);
       outline: none;
       transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
-      -webkit-appearance: none;
-      appearance: none;
+      -webkit-appearance: none; appearance: none;
     }
 
-    input[type="text"]:hover,
-    input[type="email"]:hover,
-    input[type="tel"]:hover,
-    input[type="number"]:hover,
-    select:hover {
-      border-color: var(--gray-200);
-      background: var(--white);
+    input[type="text"]:hover, input[type="email"]:hover,
+    input[type="tel"]:hover, input[type="number"]:hover, select:hover {
+      border-color: var(--gray-200); background: var(--white);
     }
 
-    input[type="text"]:focus,
-    input[type="email"]:focus,
-    input[type="tel"]:focus,
-    input[type="number"]:focus,
-    select:focus {
-      border-color: var(--navy);
-      background: var(--white);
+    input[type="text"]:focus, input[type="email"]:focus,
+    input[type="tel"]:focus, input[type="number"]:focus, select:focus {
+      border-color: var(--navy); background: var(--white);
       box-shadow: 0 0 0 3px rgba(12,59,110,0.08);
     }
 
-    input[type="text"]::placeholder,
-    input[type="email"]::placeholder,
-    input[type="tel"]::placeholder,
-    input[type="number"]::placeholder {
-      color: var(--gray-200);
-    }
-
+    input::placeholder { color: var(--gray-200); }
     input[type="number"] { -moz-appearance: textfield; }
     input[type="number"]::-webkit-outer-spin-button,
     input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
 
-    /* Select arrow */
     .select-wrap { position: relative; }
     .select-wrap::after {
-      content: '';
-      position: absolute;
-      right: 14px;
-      top: 50%;
+      content: ''; position: absolute; right: 14px; top: 50%;
       transform: translateY(-50%);
-      width: 0;
-      height: 0;
-      border-left: 4px solid transparent;
-      border-right: 4px solid transparent;
-      border-top: 5px solid var(--gray-400);
-      pointer-events: none;
+      width: 0; height: 0;
+      border-left: 4px solid transparent; border-right: 4px solid transparent;
+      border-top: 5px solid var(--gray-400); pointer-events: none;
       transition: border-top-color var(--transition);
     }
     .select-wrap:focus-within::after { border-top-color: var(--navy); }
@@ -436,382 +284,282 @@
 
     /* File upload drop zone */
     .drop-zone {
-      position: relative;
-      border: 1.5px dashed var(--gray-200);
-      border-radius: var(--radius);
-      background: var(--off-white);
-      padding: 28px 20px;
-      text-align: center;
-      cursor: pointer;
+      position: relative; border: 1.5px dashed var(--gray-200);
+      border-radius: var(--radius); background: var(--off-white);
+      padding: 28px 20px; text-align: center; cursor: pointer;
       transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
       outline: none;
     }
 
-    .drop-zone:hover,
-    .drop-zone:focus-within {
-      border-color: var(--navy);
-      background: rgba(12,59,110,0.02);
+    .drop-zone:hover, .drop-zone:focus-within {
+      border-color: var(--navy); background: rgba(12,59,110,0.02);
       box-shadow: 0 0 0 3px rgba(12,59,110,0.07);
     }
 
     .drop-zone.drag-over {
-      border-color: var(--navy-mid);
-      background: rgba(12,59,110,0.04);
+      border-color: var(--navy-mid); background: rgba(12,59,110,0.04);
       box-shadow: 0 0 0 4px rgba(12,59,110,0.10);
     }
 
-    .drop-zone.has-file {
-      border-color: var(--success);
-      background: var(--success-bg);
-      border-style: solid;
-    }
+    .drop-zone.has-file { border-color: var(--success); background: var(--success-bg); border-style: solid; }
 
     .drop-icon {
-      width: 40px;
-      height: 40px;
-      margin: 0 auto 12px;
-      background: var(--gray-100);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      width: 40px; height: 40px; margin: 0 auto 12px;
+      background: var(--gray-100); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
       transition: background var(--transition);
     }
-    .drop-zone:hover .drop-icon,
-    .drop-zone.drag-over .drop-icon { background: rgba(12,59,110,0.08); }
+    .drop-zone:hover .drop-icon, .drop-zone.drag-over .drop-icon { background: rgba(12,59,110,0.08); }
     .drop-zone.has-file .drop-icon { background: rgba(11,143,106,0.12); }
     .drop-icon svg { width: 18px; height: 18px; color: var(--gray-400); }
     .drop-zone.has-file .drop-icon svg { color: var(--success); }
 
-    .drop-primary {
-      font-size: 13.5px;
-      font-weight: 500;
-      color: var(--gray-700);
-      margin-bottom: 4px;
-    }
+    .drop-primary { font-size: 13.5px; font-weight: 500; color: var(--gray-700); margin-bottom: 4px; }
     .drop-zone.has-file .drop-primary { color: var(--success); }
 
-    .drop-secondary {
-      font-size: 12px;
-      color: var(--gray-400);
-    }
-    .drop-secondary span {
-      color: var(--navy);
-      font-weight: 500;
-      text-decoration: underline;
-      text-underline-offset: 2px;
-    }
+    .drop-secondary { font-size: 12px; color: var(--gray-400); }
+    .drop-secondary span { color: var(--navy); font-weight: 500; text-decoration: underline; text-underline-offset: 2px; }
 
     #billFile { display: none; }
 
     #fileNameDisplay {
-      margin-top: 8px;
-      font-family: var(--font-mono);
-      font-size: 11.5px;
-      color: var(--success);
-      display: none;
+      margin-top: 8px; font-family: var(--font-mono); font-size: 11.5px;
+      color: var(--success); display: none;
     }
     .has-file #fileNameDisplay { display: block; }
 
     /* Agreement checkbox */
     .agree-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      margin: 22px 0 24px;
-      padding: 16px;
-      background: var(--gray-50);
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--gray-100);
-      cursor: pointer;
+      display: flex; align-items: flex-start; gap: 12px;
+      margin: 22px 0 24px; padding: 16px;
+      background: var(--gray-50); border-radius: var(--radius-sm);
+      border: 1px solid var(--gray-100); cursor: pointer;
     }
 
-    .agree-row:has(input:checked) {
-      background: rgba(12,59,110,0.03);
-      border-color: rgba(12,59,110,0.15);
-    }
+    .agree-row:has(input:checked) { background: rgba(12,59,110,0.03); border-color: rgba(12,59,110,0.15); }
 
     .checkbox-custom {
-      width: 20px;
-      height: 20px;
-      border: 1.5px solid var(--gray-200);
-      border-radius: 4px;
-      background: var(--white);
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all var(--transition);
-      margin-top: 1px;
+      width: 20px; height: 20px; border: 1.5px solid var(--gray-200);
+      border-radius: 4px; background: var(--white); flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      transition: all var(--transition); margin-top: 1px;
     }
 
-    .agree-row input[type="checkbox"] {
-      position: absolute;
-      opacity: 0;
-      pointer-events: none;
-      width: 1px;
-      height: 1px;
-    }
+    .agree-row input[type="checkbox"] { position: absolute; opacity: 0; pointer-events: none; width: 1px; height: 1px; }
 
-    .agree-row input[type="checkbox"]:checked + .checkbox-custom {
-      background: var(--navy);
-      border-color: var(--navy);
-    }
+    .agree-row input[type="checkbox"]:checked + .checkbox-custom { background: var(--navy); border-color: var(--navy); }
 
     .checkmark-svg {
-      width: 11px;
-      height: 11px;
-      opacity: 0;
-      transform: scale(0.5);
+      width: 11px; height: 11px; opacity: 0; transform: scale(0.5);
       transition: all 180ms cubic-bezier(0.34, 1.56, 0.64, 1);
-      stroke: var(--white);
-      stroke-width: 2.5;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+      stroke: var(--white); stroke-width: 2.5; fill: none;
+      stroke-linecap: round; stroke-linejoin: round;
     }
 
-    .agree-row input[type="checkbox"]:checked ~ * .checkmark-svg,
-    .agree-row:has(input:checked) .checkmark-svg {
-      opacity: 1;
-      transform: scale(1);
-    }
+    .agree-row:has(input:checked) .checkmark-svg { opacity: 1; transform: scale(1); }
 
-    .agree-label {
-      font-size: 13.5px;
-      color: var(--gray-600);
-      line-height: 1.55;
-      user-select: none;
-    }
-
+    .agree-label { font-size: 13.5px; color: var(--gray-600); line-height: 1.55; user-select: none; }
     .agree-label strong { color: var(--navy); font-weight: 600; }
 
     /* Error banner */
     .error-banner {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--error-bg);
-      border: 1px solid rgba(192,57,43,0.2);
-      color: var(--error);
-      font-size: 13px;
-      padding: 12px 14px;
-      border-radius: var(--radius-sm);
-      margin-bottom: 16px;
+      display: flex; align-items: center; gap: 10px;
+      background: var(--error-bg); border: 1px solid rgba(192,57,43,0.2);
+      color: var(--error); font-size: 13px; padding: 12px 14px;
+      border-radius: var(--radius-sm); margin-bottom: 16px;
     }
-
     .error-banner svg { flex-shrink: 0; width: 16px; height: 16px; }
     .error-banner.hidden { display: none; }
 
     /* Submit button */
     .btn-submit {
-      width: 100%;
-      height: 52px;
-      background: var(--navy);
-      color: var(--white);
-      border: none;
-      border-radius: var(--radius-sm);
-      font-family: var(--font-ui);
-      font-size: 15px;
-      font-weight: 600;
-      letter-spacing: 0.01em;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
+      width: 100%; height: 52px;
+      background: var(--navy); color: var(--white);
+      border: none; border-radius: var(--radius-sm);
+      font-family: var(--font-ui); font-size: 15px; font-weight: 600;
+      letter-spacing: 0.01em; cursor: pointer;
+      position: relative; overflow: hidden;
       transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
 
     .btn-submit::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
-      height: 100%;
-      width: 0%;
-      background: rgba(255,255,255,0.08);
-      transition: width 2s ease;
+      content: ''; position: absolute; left: 0; top: 0;
+      height: 100%; width: 0%; background: rgba(255,255,255,0.08);
+      transition: width 8s ease;
     }
-
     .btn-submit.loading::before { width: 100%; }
 
-    .btn-submit:hover:not(:disabled) {
-      background: var(--navy-mid);
-      transform: translateY(-1px);
-      box-shadow: var(--shadow);
-    }
-
+    .btn-submit:hover:not(:disabled) { background: var(--navy-mid); transform: translateY(-1px); box-shadow: var(--shadow); }
     .btn-submit:active:not(:disabled) { transform: translateY(0); }
-
-    .btn-submit:disabled {
-      opacity: 0.7;
-      cursor: not-allowed;
-    }
-
+    .btn-submit:disabled { opacity: 0.7; cursor: not-allowed; }
     .btn-submit svg { width: 18px; height: 18px; flex-shrink: 0; }
 
     .btn-spinner {
-      width: 18px;
-      height: 18px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: var(--white);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: none;
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.3); border-top-color: var(--white);
+      border-radius: 50%; animation: spin 0.7s linear infinite; display: none;
     }
 
-    .btn-submit.loading .btn-text { display: none; }
-    .btn-submit.loading .btn-spinner { display: block; }
+    .btn-step { display: none; font-size: 14px; font-weight: 500; }
+
+    .btn-submit.loading .btn-text  { display: none; }
     .btn-submit.loading .btn-arrow { display: none; }
+    .btn-submit.loading .btn-spinner { display: block; }
+    .btn-submit.loading .btn-step  { display: inline; }
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
     .form-foot {
-      margin-top: 14px;
-      font-size: 11.5px;
-      color: var(--gray-400);
-      text-align: center;
-      line-height: 1.5;
+      margin-top: 14px; font-size: 11.5px; color: var(--gray-400);
+      text-align: center; line-height: 1.5;
     }
-
     .form-foot a { color: var(--navy); text-decoration: none; }
     .form-foot a:hover { text-decoration: underline; }
 
     /* ─── Success state ───────────────────────────────────────────── */
     .success-state {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      text-align: center;
-      padding: 32px 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex: 1; text-align: center; padding: 32px 0;
     }
 
     .success-state.hidden { display: none; }
 
     .success-icon {
-      width: 72px;
-      height: 72px;
-      background: var(--success-bg);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 24px;
-      border: 2px solid rgba(11,143,106,0.2);
+      width: 72px; height: 72px;
+      background: var(--success-bg); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px; border: 2px solid rgba(11,143,106,0.2);
     }
 
     .success-checkmark {
-      width: 32px;
-      height: 32px;
-      stroke: var(--success);
-      stroke-width: 2.5;
-      fill: none;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+      width: 32px; height: 32px; stroke: var(--success);
+      stroke-width: 2.5; fill: none;
+      stroke-linecap: round; stroke-linejoin: round;
     }
 
     .success-check-path {
-      stroke-dasharray: 60;
-      stroke-dashoffset: 60;
+      stroke-dasharray: 60; stroke-dashoffset: 60;
       animation: draw-check 0.5s ease 0.2s forwards;
     }
 
-    @keyframes draw-check {
-      to { stroke-dashoffset: 0; }
-    }
+    @keyframes draw-check { to { stroke-dashoffset: 0; } }
 
     .success-title {
-      font-family: var(--font-display);
-      font-size: 26px;
-      font-weight: 600;
-      color: var(--navy-deep);
-      margin-bottom: 10px;
-      line-height: 1.2;
+      font-family: var(--font-display); font-size: 26px; font-weight: 600;
+      color: var(--navy-deep); margin-bottom: 10px; line-height: 1.2;
     }
 
     .success-message {
-      font-size: 14.5px;
-      color: var(--gray-600);
-      max-width: 380px;
-      line-height: 1.65;
-      margin-bottom: 28px;
+      font-size: 14.5px; color: var(--gray-600);
+      max-width: 380px; line-height: 1.65; margin-bottom: 24px;
     }
 
+    /* Audit summary stats */
+    .audit-summary {
+      display: flex; align-items: stretch;
+      background: var(--gray-50); border: 1px solid var(--gray-100);
+      border-radius: var(--radius); width: 100%; max-width: 420px;
+      margin-bottom: 20px; overflow: hidden;
+    }
+
+    .audit-summary.hidden { display: none; }
+
+    .summary-box { flex: 1; padding: 20px 16px; text-align: center; }
+    .summary-box + .summary-box { border-left: 1px solid var(--gray-100); }
+
+    .summary-num {
+      display: block; font-family: var(--font-mono);
+      font-size: 30px; font-weight: 600;
+      color: var(--gray-800); line-height: 1; margin-bottom: 6px;
+    }
+
+    .summary-num.teal { color: var(--success); }
+
+    .summary-label {
+      font-size: 11px; color: var(--gray-400);
+      text-transform: uppercase; letter-spacing: 0.06em;
+    }
+
+    /* Errors breakdown list */
+    .errors-breakdown {
+      width: 100%; max-width: 420px;
+      border: 1px solid var(--gray-100); border-radius: var(--radius-sm);
+      overflow: hidden; margin-bottom: 20px; text-align: left;
+    }
+
+    .errors-breakdown.hidden { display: none; }
+
+    .error-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px; border-bottom: 1px solid var(--gray-50); gap: 12px;
+    }
+
+    .error-item:last-child { border-bottom: none; }
+
+    .error-item-left {
+      display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0;
+    }
+
+    .error-cpt {
+      font-family: var(--font-mono); font-size: 11px; color: var(--navy);
+      background: rgba(12,59,110,0.07); padding: 2px 7px;
+      border-radius: 4px; white-space: nowrap; flex-shrink: 0;
+    }
+
+    .error-type {
+      font-size: 13px; color: var(--gray-600);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .error-recovery {
+      font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+      color: var(--success); white-space: nowrap; flex-shrink: 0;
+    }
+
+    /* Download report button */
+    .btn-download-report {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--navy); color: var(--white); text-decoration: none;
+      padding: 13px 24px; border-radius: var(--radius-sm);
+      font-size: 14px; font-weight: 600;
+      transition: background var(--transition), transform var(--transition);
+      margin-bottom: 14px; width: 100%; max-width: 420px;
+    }
+
+    .btn-download-report:hover { background: var(--navy-mid); transform: translateY(-1px); }
+    .btn-download-report svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .btn-download-report.hidden { display: none; }
+
+    /* Email confirmation */
+    .email-confirm {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--success-bg); border: 1px solid rgba(11,143,106,0.2);
+      border-radius: var(--radius-sm); padding: 12px 16px;
+      font-size: 13.5px; color: var(--success);
+      width: 100%; max-width: 420px; margin-bottom: 20px;
+    }
+
+    .email-confirm.hidden { display: none; }
+    .email-confirm svg { flex-shrink: 0; width: 16px; height: 16px; }
+
+    /* Reference ID */
     .success-ref {
-      background: var(--gray-50);
-      border: 1px solid var(--gray-100);
-      border-radius: var(--radius-sm);
-      padding: 14px 20px;
-      text-align: left;
-      width: 100%;
-      max-width: 400px;
+      background: var(--gray-50); border: 1px solid var(--gray-100);
+      border-radius: var(--radius-sm); padding: 14px 20px;
+      text-align: left; width: 100%; max-width: 420px;
     }
 
     .success-ref-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--gray-400);
-      margin-bottom: 4px;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--gray-400); margin-bottom: 4px;
     }
 
-    .success-ref-id {
-      font-family: var(--font-mono);
-      font-size: 13px;
-      color: var(--navy);
-      font-weight: 500;
-    }
-
-    .success-steps {
-      width: 100%;
-      max-width: 400px;
-      margin-top: 20px;
-    }
-
-    .success-step {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 10px 0;
-      border-bottom: 1px solid var(--gray-50);
-    }
-
-    .success-step:last-child { border-bottom: none; }
-
-    .step-num {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: var(--navy);
-      color: var(--white);
-      font-size: 11px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .step-text {
-      font-size: 13px;
-      color: var(--gray-600);
-      line-height: 1.45;
-      padding-top: 2px;
-    }
-
-    .step-text strong { color: var(--gray-800); }
+    .success-ref-id { font-family: var(--font-mono); font-size: 13px; color: var(--navy); font-weight: 500; }
 
     /* ─── Page-load animation ────────────────────────────────────── */
-    .hero-top,
-    .hero-foot,
-    .form-header,
-    #auditForm {
+    .hero-top, .hero-foot, .form-header, #auditForm {
       animation: fade-up 0.55s cubic-bezier(0.4, 0, 0.2, 1) both;
     }
 
@@ -825,41 +573,20 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .fade-out {
-      animation: fade-out 0.35s ease forwards;
-    }
+    .fade-out { animation: fade-out 0.35s ease forwards; }
+    @keyframes fade-out { to { opacity: 0; transform: translateY(-8px); } }
 
-    @keyframes fade-out {
-      to { opacity: 0; transform: translateY(-8px); }
-    }
-
-    .fade-in {
-      animation: fade-up 0.45s ease both;
-    }
+    .fade-in { animation: fade-up 0.45s ease both; }
 
     /* ─── Responsive ─────────────────────────────────────────────── */
     @media (max-width: 900px) {
       .shell { grid-template-columns: 1fr; }
-
-      .hero {
-        padding: 36px 32px 40px;
-        min-height: unset;
-      }
-
+      .hero { padding: 36px 32px 40px; min-height: unset; }
       .hero::after { display: none; }
-
       .hero-headline { font-size: 36px; }
-      .trust-list    { display: none; }
-
-      .stat-row {
-        gap: 28px;
-        margin-top: 24px;
-      }
-
-      .form-panel {
-        padding: 40px 32px 52px;
-      }
-
+      .trust-list { display: none; }
+      .stat-row { gap: 28px; margin-top: 24px; }
+      .form-panel { padding: 40px 32px 52px; }
       .field-grid-3 { grid-template-columns: 1fr 1fr; }
     }
 
@@ -867,8 +594,7 @@
       .hero { padding: 28px 20px 32px; }
       .form-panel { padding: 32px 20px 48px; }
       .form-title { font-size: 24px; }
-      .field-grid-2,
-      .field-grid-3 { grid-template-columns: 1fr; }
+      .field-grid-2, .field-grid-3 { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -880,7 +606,6 @@
   <aside class="hero" aria-label="About MedBill AI">
 
     <div class="hero-top">
-      <!-- Wordmark -->
       <div class="wordmark">
         <div class="wordmark-icon">
           <svg viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -895,7 +620,6 @@
         </div>
       </div>
 
-      <!-- Headline -->
       <h1 class="hero-headline">
         Catch billing errors<br />
         <em>before they cost you.</em>
@@ -908,7 +632,6 @@
         upcoding violations, and denied claims that should be covered.
       </p>
 
-      <!-- Trust points -->
       <ul class="trust-list" aria-label="Service features">
         <li class="trust-item">
           <div class="trust-icon">
@@ -930,8 +653,8 @@
             </svg>
           </div>
           <div>
-            <div class="trust-label">24-Hour Turnaround</div>
-            <div class="trust-desc">Full audit report delivered within one business day.</div>
+            <div class="trust-label">Results in Minutes</div>
+            <div class="trust-desc">Full audit and dispute letters generated automatically — no wait.</div>
           </div>
         </li>
         <li class="trust-item">
@@ -960,7 +683,6 @@
       </ul>
     </div>
 
-    <!-- Hero footer stats -->
     <div class="hero-foot">
       <div class="stat-row">
         <div class="stat-item">
@@ -983,39 +705,56 @@
   <!-- ────────────────── Form panel ────────────────── -->
   <main class="form-panel" aria-label="Audit intake form">
 
-    <!-- Success state (hidden until submission succeeds) -->
+    <!-- ── Success state (hidden until pipeline completes) ── -->
     <div class="success-state hidden" id="successState" role="alert">
       <div class="success-icon">
         <svg class="success-checkmark" viewBox="0 0 32 32">
           <path class="success-check-path" d="M7 16.5l6 6 12-12" />
         </svg>
       </div>
-      <h2 class="success-title">We received your bill.</h2>
-      <p class="success-message">
-        Your audit report will be ready within 24 hours.
-        We'll send the results — including any errors found and dispute letters — to your email.
-      </p>
+
+      <h2 class="success-title" id="successTitle">Audit Complete</h2>
+      <p class="success-message" id="successMsg">Your bill has been fully audited.</p>
+
+      <!-- Summary stats -->
+      <div class="audit-summary hidden" id="auditSummary">
+        <div class="summary-box">
+          <span class="summary-num" id="summaryErrors">—</span>
+          <span class="summary-label">billing errors found</span>
+        </div>
+        <div class="summary-box">
+          <span class="summary-num teal" id="summaryRecovery">—</span>
+          <span class="summary-label">potential recovery</span>
+        </div>
+      </div>
+
+      <!-- Per-error breakdown -->
+      <div class="errors-breakdown hidden" id="errorsBreakdown"></div>
+
+      <!-- Download PDF -->
+      <a class="btn-download-report hidden" id="downloadBtn" href="#" target="_blank">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 17h14M10 3v10M6 9l4 4 4-4" />
+        </svg>
+        Download Full Report (PDF)
+      </a>
+
+      <!-- Email confirmation -->
+      <div class="email-confirm hidden" id="emailConfirm">
+        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 8l7 5 7-5M3 6h14a1 1 0 011 1v9a1 1 0 01-1 1H3a1 1 0 01-1-1V7a1 1 0 011-1z" />
+        </svg>
+        Your personalized dispute letters have been sent to your email
+      </div>
+
+      <!-- Reference ID -->
       <div class="success-ref">
         <div class="success-ref-label">Audit Reference ID</div>
         <div class="success-ref-id" id="auditRefId">—</div>
       </div>
-      <div class="success-steps">
-        <div class="success-step">
-          <div class="step-num">1</div>
-          <div class="step-text"><strong>AI audit underway</strong> — Claude is reviewing your bill against CPT coding rules and NCCI edits.</div>
-        </div>
-        <div class="success-step">
-          <div class="step-num">2</div>
-          <div class="step-text"><strong>Report delivered</strong> — You'll receive a PDF audit report and dispute letters within 24 hours.</div>
-        </div>
-        <div class="success-step">
-          <div class="step-num">3</div>
-          <div class="step-text"><strong>Send the letters</strong> — Each dispute letter cites the specific regulation your provider violated.</div>
-        </div>
-      </div>
     </div>
 
-    <!-- Form wrapper (hidden on success) -->
+    <!-- ── Form wrapper (hidden on success) ── -->
     <div id="formWrapper">
       <div class="form-header">
         <div class="form-eyebrow">Free 30-Day Audit Review</div>
@@ -1023,7 +762,6 @@
         <p class="form-subtitle">Upload one bill or EOB — we'll find what you were overbilled.</p>
       </div>
 
-      <!-- Error banner -->
       <div class="error-banner hidden" id="errorBanner" role="alert">
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="8" cy="8" r="6" />
@@ -1034,76 +772,37 @@
 
       <form id="auditForm" novalidate>
 
-        <!-- Practice info -->
         <div class="field-section">Practice Information</div>
 
         <div class="field-wrap">
           <label for="practiceName">Practice Name <span class="req">*</span></label>
-          <input
-            type="text"
-            id="practiceName"
-            name="practice_name"
-            placeholder="e.g. Riverside Family Medicine"
-            autocomplete="organization"
-            required
-          />
+          <input type="text" id="practiceName" name="practice_name" placeholder="e.g. Riverside Family Medicine" autocomplete="organization" required />
         </div>
 
-        <!-- Contact info -->
         <div class="field-section">Contact Details</div>
 
         <div class="field-grid-2" style="margin-bottom:16px">
           <div class="field-wrap">
             <label for="contactName">Contact Name <span class="req">*</span></label>
-            <input
-              type="text"
-              id="contactName"
-              name="contact_name"
-              placeholder="Dr. Jane Smith"
-              autocomplete="name"
-              required
-            />
+            <input type="text" id="contactName" name="contact_name" placeholder="Dr. Jane Smith" autocomplete="name" required />
           </div>
           <div class="field-wrap">
             <label for="contactPhone">Phone <span class="req">*</span></label>
-            <input
-              type="tel"
-              id="contactPhone"
-              name="contact_phone"
-              placeholder="(555) 000-0000"
-              autocomplete="tel"
-              required
-            />
+            <input type="tel" id="contactPhone" name="contact_phone" placeholder="(555) 000-0000" autocomplete="tel" required />
           </div>
         </div>
 
         <div class="field-wrap">
           <label for="contactEmail">Email Address <span class="req">*</span></label>
-          <input
-            type="email"
-            id="contactEmail"
-            name="contact_email"
-            placeholder="jane@practice.com"
-            autocomplete="email"
-            required
-          />
+          <input type="email" id="contactEmail" name="contact_email" placeholder="jane@practice.com" autocomplete="email" required />
         </div>
 
-        <!-- Practice details -->
         <div class="field-section">Practice Details</div>
 
         <div class="field-grid-2">
           <div class="field-wrap">
             <label for="numProviders">Number of Providers <span class="req">*</span></label>
-            <input
-              type="number"
-              id="numProviders"
-              name="num_providers"
-              placeholder="e.g. 4"
-              min="1"
-              max="9999"
-              required
-            />
+            <input type="number" id="numProviders" name="num_providers" placeholder="e.g. 4" min="1" max="9999" required />
           </div>
           <div class="field-wrap">
             <label for="ehrSoftware">EHR / Billing Software <span class="req">*</span></label>
@@ -1120,25 +819,16 @@
           </div>
         </div>
 
-        <!-- File upload -->
         <div class="field-section">Document Upload</div>
 
         <div class="field-wrap">
           <label>Upload EOB or Billing Statement <span class="req">*</span></label>
-          <div
-            class="drop-zone"
-            id="dropZone"
-            role="button"
-            tabindex="0"
-            aria-label="Upload PDF — click or drag and drop"
-          >
+          <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Upload PDF — click or drag and drop">
             <div class="drop-icon">
-              <!-- Default: upload icon -->
               <svg id="dropIconDefault" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M10 13V4M6 8l4-4 4 4" />
                 <path d="M3 15h14" />
               </svg>
-              <!-- File icon when selected -->
               <svg id="dropIconFile" style="display:none" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M5 3h7l4 4v11a1 1 0 01-1 1H5a1 1 0 01-1-1V4a1 1 0 011-1z" />
                 <path d="M12 3v4h4" />
@@ -1147,11 +837,10 @@
             <div class="drop-primary" id="dropPrimary">Drop your PDF here</div>
             <div class="drop-secondary" id="dropSecondary">or <span>browse files</span> — PDF only, max 16 MB</div>
             <div id="fileNameDisplay"></div>
-            <input type="file" id="billFile" name="file" accept=".pdf,application/pdf" required />
+            <input type="file" id="billFile" name="file" accept=".pdf,.txt,application/pdf,text/plain" required />
           </div>
         </div>
 
-        <!-- Agreement -->
         <label class="agree-row" for="agreeCheck">
           <input type="checkbox" id="agreeCheck" name="agree" required />
           <div class="checkbox-custom">
@@ -1165,7 +854,6 @@
           </span>
         </label>
 
-        <!-- Error banner (repeated near button for visibility) -->
         <div class="error-banner hidden" id="errorBanner2" role="alert">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="8" cy="8" r="6" />
@@ -1174,13 +862,13 @@
           <span id="errorText2"></span>
         </div>
 
-        <!-- Submit -->
         <button type="submit" class="btn-submit" id="submitBtn">
           <span class="btn-text">Start My Free Audit Review</span>
           <svg class="btn-arrow" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 10h12M11 5l5 5-5 5" />
           </svg>
           <div class="btn-spinner"></div>
+          <span class="btn-step" id="btnStep"></span>
         </button>
 
         <p class="form-foot">
@@ -1190,46 +878,43 @@
         </p>
 
       </form>
-    </div><!-- /formWrapper -->
+    </div>
 
   </main>
 </div>
 
 <script>
-  // ─── Backend URL ─────────────────────────────────────────────────────────
-  // Local dev: http://127.0.0.1:5000  |  Production: your Railway URL
   const BACKEND_URL = "https://medbill-ai-production.up.railway.app";
-  // ─────────────────────────────────────────────────────────────────────────
 
-  const form        = document.getElementById('auditForm');
-  const formWrapper = document.getElementById('formWrapper');
-  const submitBtn   = document.getElementById('submitBtn');
+  const form         = document.getElementById('auditForm');
+  const formWrapper  = document.getElementById('formWrapper');
+  const submitBtn    = document.getElementById('submitBtn');
   const successState = document.getElementById('successState');
-  const auditRefId  = document.getElementById('auditRefId');
-  const dropZone    = document.getElementById('dropZone');
-  const fileInput   = document.getElementById('billFile');
-  const dropPrimary = document.getElementById('dropPrimary');
+  const dropZone     = document.getElementById('dropZone');
+  const fileInput    = document.getElementById('billFile');
+  const dropPrimary  = document.getElementById('dropPrimary');
   const dropSecondary = document.getElementById('dropSecondary');
   const fileNameDisplay = document.getElementById('fileNameDisplay');
   const dropIconDefault = document.getElementById('dropIconDefault');
   const dropIconFile    = document.getElementById('dropIconFile');
 
-  // ─── File upload interactions ─────────────────────────────────────────
+  // ── File drop zone ─────────────────────────────────────────────────────
+
   function setFile(file) {
     if (!file) return;
-    if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
-      showError('Please upload a PDF file. Other formats are not supported.');
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    const isTxt = file.type === 'text/plain' || file.name.toLowerCase().endsWith('.txt');
+    if (!isPdf && !isTxt) {
+      showError('Please upload a PDF or .txt file.');
       return;
     }
     if (file.size > 16 * 1024 * 1024) {
-      showError('File exceeds the 16 MB limit. Please upload a smaller PDF.');
+      showError('File exceeds the 16 MB limit. Please upload a smaller file.');
       return;
     }
-    // Inject into the real file input via DataTransfer
     const dt = new DataTransfer();
     dt.items.add(file);
     fileInput.files = dt.files;
-
     dropZone.classList.add('has-file');
     dropPrimary.textContent = 'Document ready';
     dropSecondary.style.display = 'none';
@@ -1240,149 +925,228 @@
   }
 
   dropZone.addEventListener('click', () => fileInput.click());
-
   dropZone.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      fileInput.click();
-    }
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); }
   });
+  fileInput.addEventListener('change', () => { if (fileInput.files.length > 0) setFile(fileInput.files[0]); });
+  dropZone.addEventListener('dragenter', (e) => e.preventDefault());
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', (e) => { if (!dropZone.contains(e.relatedTarget)) dropZone.classList.remove('drag-over'); });
+  dropZone.addEventListener('drop', (e) => { e.preventDefault(); dropZone.classList.remove('drag-over'); if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]); });
 
-  fileInput.addEventListener('change', () => {
-    if (fileInput.files.length > 0) setFile(fileInput.files[0]);
-  });
+  // ── Error helpers ──────────────────────────────────────────────────────
 
-  dropZone.addEventListener('dragenter', (e) => { e.preventDefault(); });
-
-  dropZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    dropZone.classList.add('drag-over');
-  });
-
-  dropZone.addEventListener('dragleave', (e) => {
-    if (!dropZone.contains(e.relatedTarget)) {
-      dropZone.classList.remove('drag-over');
-    }
-  });
-
-  dropZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dropZone.classList.remove('drag-over');
-    const file = e.dataTransfer.files[0];
-    if (file) setFile(file);
-  });
-
-  // ─── Error helpers ────────────────────────────────────────────────────
   function showError(msg) {
     ['errorBanner', 'errorBanner2'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) {
-        el.querySelector('span').textContent = msg;
-        el.classList.remove('hidden');
-      }
+      if (el) { el.querySelector('span').textContent = msg; el.classList.remove('hidden'); }
     });
-    document.getElementById('errorBanner2')
-      ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    document.getElementById('errorBanner2')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   function hideError() {
-    ['errorBanner', 'errorBanner2'].forEach(id => {
-      document.getElementById(id)?.classList.add('hidden');
-    });
+    ['errorBanner', 'errorBanner2'].forEach(id => document.getElementById(id)?.classList.add('hidden'));
   }
 
-  // ─── Validation ───────────────────────────────────────────────────────
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Step label ─────────────────────────────────────────────────────────
+
+  function setStep(msg) {
+    document.getElementById('btnStep').textContent = msg;
+  }
+
+  // ── Validation ─────────────────────────────────────────────────────────
+
   function validateForm() {
     const fields = [
-      { id: 'practiceName',  label: 'Practice Name' },
-      { id: 'contactName',   label: 'Contact Name' },
-      { id: 'contactEmail',  label: 'Email Address' },
-      { id: 'contactPhone',  label: 'Phone number' },
-      { id: 'numProviders',  label: 'Number of Providers' },
-      { id: 'ehrSoftware',   label: 'EHR / Billing Software' },
+      { id: 'practiceName', label: 'Practice Name' },
+      { id: 'contactName',  label: 'Contact Name' },
+      { id: 'contactEmail', label: 'Email Address' },
+      { id: 'contactPhone', label: 'Phone number' },
+      { id: 'numProviders', label: 'Number of Providers' },
+      { id: 'ehrSoftware',  label: 'EHR / Billing Software' },
     ];
-
     for (const { id, label } of fields) {
       const el = document.getElementById(id);
-      if (!el.value.trim()) {
-        showError(`${label} is required.`);
-        el.focus();
-        return false;
-      }
+      if (!el.value.trim()) { showError(`${label} is required.`); el.focus(); return false; }
     }
-
     const email = document.getElementById('contactEmail').value.trim();
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       showError('Please enter a valid email address.');
       document.getElementById('contactEmail').focus();
       return false;
     }
-
     if (!fileInput.files || fileInput.files.length === 0) {
-      showError('Please upload your billing statement or EOB document (PDF).');
+      showError('Please upload your billing statement or EOB document.');
       dropZone.focus();
       return false;
     }
-
     if (!document.getElementById('agreeCheck').checked) {
       showError('Please agree to the free 30-day audit review to continue.');
       return false;
     }
-
     return true;
   }
 
-  // ─── Submit ───────────────────────────────────────────────────────────
+  // ── Success screen ─────────────────────────────────────────────────────
+
+  function showSuccess(billId, analyzeData, disputeData) {
+    const errorCount   = analyzeData.error_count || 0;
+    const totalRecovery = analyzeData.total_estimated_recovery || 0;
+    const errors       = analyzeData.errors || [];
+    const letters      = (disputeData && disputeData.letters) || [];
+
+    // Title + message
+    document.getElementById('successTitle').textContent =
+      errorCount > 0
+        ? `We found ${errorCount} billing error${errorCount !== 1 ? 's' : ''} on your bill`
+        : 'Audit Complete — No Errors Found';
+
+    document.getElementById('successMsg').textContent =
+      errorCount > 0
+        ? `Total potential recovery: $${totalRecovery.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2})}`
+        : 'Great news — your bill appears to be correctly coded.';
+
+    // Summary stats
+    if (errorCount > 0) {
+      document.getElementById('summaryErrors').textContent = errorCount;
+      document.getElementById('summaryRecovery').textContent =
+        '$' + totalRecovery.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+      document.getElementById('auditSummary').classList.remove('hidden');
+    }
+
+    // Errors breakdown
+    if (errors.length > 0) {
+      const bd = document.getElementById('errorsBreakdown');
+      bd.innerHTML = errors.map(err => {
+        const cpt  = err.cpt_code || '—';
+        const type = err.error_type || err.category || 'Error';
+        const rec  = err.estimated_recovery || 0;
+        return `<div class="error-item">
+          <div class="error-item-left">
+            <span class="error-cpt">${escHtml(cpt)}</span>
+            <span class="error-type">${escHtml(type)}</span>
+          </div>
+          <span class="error-recovery">${rec > 0 ? '$' + rec.toLocaleString('en-US', {minimumFractionDigits:2}) : '—'}</span>
+        </div>`;
+      }).join('');
+      bd.classList.remove('hidden');
+    }
+
+    // Download button
+    const dl = document.getElementById('downloadBtn');
+    dl.href = `${BACKEND_URL}/report/${billId}/pdf?download=true`;
+    dl.classList.remove('hidden');
+
+    // Email confirmation
+    document.getElementById('emailConfirm').classList.remove('hidden');
+
+    // Reference ID
+    document.getElementById('auditRefId').textContent = `MBI-${billId.slice(0,8).toUpperCase()}`;
+
+    // Transition
+    formWrapper.classList.add('fade-out');
+    setTimeout(() => {
+      formWrapper.style.display = 'none';
+      successState.classList.remove('hidden');
+      successState.classList.add('fade-in');
+    }, 360);
+  }
+
+  // ── Submit ─────────────────────────────────────────────────────────────
+
   form.addEventListener('submit', async (e) => {
-    console.log('[submit] handler fired — sending POST to', BACKEND_URL + '/upload');
     e.preventDefault();
     hideError();
-
     if (!validateForm()) return;
 
     submitBtn.disabled = true;
     submitBtn.classList.add('loading');
 
-    const data = new FormData();
-    data.append('file',          fileInput.files[0]);
-    data.append('practice_name', document.getElementById('practiceName').value.trim());
-    data.append('contact_name',  document.getElementById('contactName').value.trim());
-    data.append('contact_email', document.getElementById('contactEmail').value.trim());
-    data.append('contact_phone', document.getElementById('contactPhone').value.trim());
-    data.append('num_providers', document.getElementById('numProviders').value.trim());
-    data.append('ehr_software',  document.getElementById('ehrSoftware').value);
+    const email = document.getElementById('contactEmail').value.trim();
+
+    const formData = new FormData();
+    formData.append('file',          fileInput.files[0]);
+    formData.append('practice_name', document.getElementById('practiceName').value.trim());
+    formData.append('contact_name',  document.getElementById('contactName').value.trim());
+    formData.append('contact_email', email);
+    formData.append('contact_phone', document.getElementById('contactPhone').value.trim());
+    formData.append('num_providers', document.getElementById('numProviders').value.trim());
+    formData.append('ehr_software',  document.getElementById('ehrSoftware').value);
 
     try {
-      const res = await fetch(`${BACKEND_URL}/upload`, {
-        method: 'POST',
-        body: data,
-      });
-
-      let json = {};
-      try { json = await res.json(); } catch (_) {}
-
-      if (!res.ok) {
+      // ── Step 1: Upload & extract ─────────────────────────────────
+      setStep('Extracting line items...');
+      const uploadRes = await fetch(`${BACKEND_URL}/upload`, { method: 'POST', body: formData });
+      let uploadJson = {};
+      try { uploadJson = await uploadRes.json(); } catch (_) {}
+      if (!uploadRes.ok) {
         throw new Error(
-          json.error ||
-          (res.status === 413 ? 'File is too large. Please upload a PDF under 16 MB.' :
-           res.status === 415 ? 'Only PDF files are supported.' :
-           `Server error (${res.status}). Please try again.`)
+          uploadJson.error ||
+          (uploadRes.status === 413 ? 'File is too large. Please upload a file under 16 MB.' :
+           uploadRes.status === 422 ? 'Could not extract text from this file. Please try a different PDF.' :
+           `Upload failed (${uploadRes.status}). Please try again.`)
         );
       }
 
-      // Show success
-      const refId = json.bill_id
-        ? json.bill_id.slice(0, 8).toUpperCase()
-        : 'PENDING';
+      const billId     = uploadJson.bill_id;
+      const extraction = uploadJson.extraction || {};
 
-      auditRefId.textContent = `MBI-${refId}`;
+      // ── Step 2: Analyze ──────────────────────────────────────────
+      setStep('Auditing CPT codes...');
+      const analyzeRes = await fetch(`${BACKEND_URL}/analyze/${billId}`, { method: 'POST' });
+      let analyzeData = {};
+      try { analyzeData = await analyzeRes.json(); } catch (_) {}
+      if (!analyzeRes.ok) {
+        throw new Error(analyzeData.error || `Analysis failed (${analyzeRes.status}). Please try again.`);
+      }
 
-      formWrapper.classList.add('fade-out');
-      setTimeout(() => {
-        formWrapper.style.display = 'none';
-        successState.classList.remove('hidden');
-        successState.classList.add('fade-in');
-      }, 360);
+      // ── Step 3: Generate dispute letters (soft failure) ──────────
+      setStep('Generating dispute letters...');
+      let disputeData = { letters: [] };
+      try {
+        const disputeRes = await fetch(`${BACKEND_URL}/dispute/${billId}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            patient_info: {
+              full_name:    extraction.patient_name    || 'Valued Patient',
+              address:      extraction.provider_address || 'On file',
+              phone:        'On file',
+              insurance_id: extraction.insurance_id    || 'On file',
+            },
+          }),
+        });
+        if (disputeRes.ok) disputeData = await disputeRes.json();
+      } catch (_) {}
+
+      // ── Step 4: Warm up PDF (best-effort) ────────────────────────
+      setStep('Preparing your report...');
+      try { await fetch(`${BACKEND_URL}/report/${billId}/pdf`); } catch (_) {}
+
+      // ── Step 5: Send emails (best-effort — server is also tolerant) ──
+      setStep('Sending your report...');
+      try {
+        await fetch(`${BACKEND_URL}/send-report`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bill_id:         billId,
+            email:           email,
+            patient_name:    extraction.patient_name || 'Valued Patient',
+            error_count:     analyzeData.error_count || 0,
+            total_recovery:  analyzeData.total_estimated_recovery || 0,
+            errors:          analyzeData.errors || [],
+            dispute_letters: (disputeData && disputeData.letters) || [],
+          }),
+        });
+      } catch (_) {}
+
+      // ── Show results ─────────────────────────────────────────────
+      showSuccess(billId, analyzeData, disputeData);
 
     } catch (err) {
       const msg =
@@ -1392,6 +1156,7 @@
       showError(msg);
       submitBtn.disabled = false;
       submitBtn.classList.remove('loading');
+      setStep('');
     }
   });
 </script>

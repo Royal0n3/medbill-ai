@@ -12,8 +12,10 @@ GET  /health               — Liveness check
 
 from __future__ import annotations
 
+import html
 import io
 import json
+import os
 import uuid
 from typing import Any
 
@@ -113,6 +115,216 @@ def _extract_text(file: FileStorage) -> tuple[str, str]:
     # Plain text (utf-8; replace undecodable bytes rather than crash)
     raw = file.read().decode("utf-8", errors="replace")
     return raw, "txt"
+
+
+# ---------------------------------------------------------------------------
+# Email helpers for POST /send-report
+# ---------------------------------------------------------------------------
+
+
+def _esc(s: Any) -> str:
+    return html.escape(str(s or ""))
+
+
+def _build_audit_email_html(
+    patient_name: str,
+    error_count: int,
+    total_recovery: float,
+    errors: list[dict[str, Any]],
+    dispute_letters: list[dict[str, Any]],
+) -> str:
+    recovery_fmt = f"{total_recovery:,.2f}"
+    plural = "s" if error_count != 1 else ""
+
+    # Errors table rows
+    if errors:
+        rows_html = ""
+        for err in errors:
+            cpt = _esc(err.get("cpt_code") or "—")
+            etype = _esc(err.get("error_type") or err.get("category") or "Unknown")
+            desc = _esc((err.get("description") or err.get("explanation") or "")[:140])
+            rec = float(err.get("estimated_recovery") or 0)
+            rec_str = f"${rec:,.2f}" if rec else "—"
+            rows_html += (
+                f'<tr style="border-bottom:1px solid #EEF2F7">'
+                f'<td style="padding:10px 14px;font-family:Courier New,monospace;font-size:12px;color:#0C3B6E;white-space:nowrap">{cpt}</td>'
+                f'<td style="padding:10px 14px;font-weight:600;color:#0D1B2A;font-size:13.5px">{etype}</td>'
+                f'<td style="padding:10px 14px;color:#4A5568;font-size:13px">{desc}</td>'
+                f'<td style="padding:10px 14px;text-align:right;font-weight:700;color:#10B981;white-space:nowrap">{_esc(rec_str)}</td>'
+                f'</tr>'
+            )
+    else:
+        rows_html = (
+            '<tr><td colspan="4" style="padding:16px;color:#9BADC4;'
+            'text-align:center;font-size:13px">No errors recorded.</td></tr>'
+        )
+
+    errors_table = (
+        '<table width="100%" cellpadding="0" cellspacing="0" '
+        'style="border-collapse:collapse;border:1px solid #DDE3EE;border-radius:8px;margin-bottom:28px">'
+        '<thead><tr style="background:#F0F4F9">'
+        '<th style="padding:10px 14px;text-align:left;color:#6B7C93;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em">CPT</th>'
+        '<th style="padding:10px 14px;text-align:left;color:#6B7C93;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em">Error Type</th>'
+        '<th style="padding:10px 14px;text-align:left;color:#6B7C93;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em">Description</th>'
+        '<th style="padding:10px 14px;text-align:right;color:#6B7C93;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em">Est. Recovery</th>'
+        f'</tr></thead><tbody>{rows_html}</tbody></table>'
+    )
+
+    # Dispute letter sections
+    letters_parts: list[str] = []
+    for i, letter in enumerate(dispute_letters, 1):
+        subject = _esc(letter.get("subject_line") or f"Dispute Letter {i}")
+        send_to = _esc(letter.get("send_to") or "See audit report")
+        deadline = _esc(letter.get("deadline_recommendation") or "As soon as possible")
+        text_esc = _esc(letter.get("letter_text") or "")
+        escalation = _esc(letter.get("escalation_path") or "Contact your state insurance commissioner.")
+        enc_items = "".join(
+            f'<li style="margin-bottom:4px">{_esc(enc)}</li>'
+            for enc in (letter.get("enclosures") or [])
+        ) or "<li>See audit report for documentation requirements.</li>"
+
+        letters_parts.append(
+            f'<div style="border:1px solid #DDE3EE;border-radius:10px;margin-bottom:24px;overflow:hidden">'
+            f'<div style="background:#0C3B6E;padding:14px 22px">'
+            f'<div style="color:#FFFFFF;font-size:14px;font-weight:700">Dispute Letter {i} — {subject}</div>'
+            f'</div><div style="padding:22px">'
+            f'<table cellpadding="0" cellspacing="0" style="margin-bottom:16px;font-size:13.5px">'
+            f'<tr><td style="color:#6B7C93;padding-right:16px;padding-bottom:8px;white-space:nowrap;vertical-align:top">Send&nbsp;to:</td>'
+            f'<td style="color:#0D1B2A;font-weight:600;padding-bottom:8px">{send_to}</td></tr>'
+            f'<tr><td style="color:#6B7C93;padding-right:16px;vertical-align:top">Deadline:</td>'
+            f'<td style="color:#EF4444;font-weight:600">{deadline}</td></tr>'
+            f'</table>'
+            f'<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#6B7C93;margin-bottom:8px">Letter Text</div>'
+            f'<div style="background:#F7F9FC;border-radius:6px;padding:16px 18px;font-family:Courier New,monospace;'
+            f'font-size:12px;color:#0D1B2A;white-space:pre-wrap;line-height:1.7;border:1px solid #EEF2F7">{text_esc}</div>'
+            f'<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#6B7C93;margin:16px 0 8px">Documents to Include</div>'
+            f'<ul style="margin:0;padding-left:20px;font-size:13.5px;color:#4A5568;line-height:1.7">{enc_items}</ul>'
+            f'<p style="font-size:13px;color:#6B7C93;margin:14px 0 0;line-height:1.5">'
+            f'<strong style="color:#0D1B2A">If denied:</strong> {escalation}</p>'
+            f'</div></div>'
+        )
+
+    letters_html = "".join(letters_parts) or (
+        '<p style="color:#9BADC4;font-size:14px">No dispute letters generated.</p>'
+    )
+
+    return (
+        '<!DOCTYPE html><html><head>'
+        '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
+        '</head><body style="margin:0;padding:0;background:#EEF2F7;font-family:Helvetica,Arial,sans-serif">'
+        '<table width="100%" cellpadding="0" cellspacing="0" style="background:#EEF2F7;padding:32px 16px">'
+        '<tr><td align="center">'
+        '<table width="640" cellpadding="0" cellspacing="0" style="max-width:640px;width:100%">'
+        '<tr><td style="background:#0C3B6E;padding:28px 40px;border-radius:12px 12px 0 0">'
+        '<div style="color:#FFFFFF;font-size:20px;font-weight:700">MedBill AI</div>'
+        '<div style="color:rgba(255,255,255,0.5);font-size:11px;margin-top:3px;letter-spacing:0.08em;text-transform:uppercase">by KamSAI Systems</div>'
+        '</td></tr>'
+        '<tr><td style="background:#FFFFFF;padding:40px;border-radius:0 0 12px 12px">'
+        f'<h1 style="color:#0D1B2A;font-size:24px;font-weight:700;margin:0 0 8px">Your Medical Bill Audit Results</h1>'
+        f'<p style="color:#6B7C93;font-size:15px;margin:0 0 32px;line-height:1.6">Hi {_esc(patient_name)}, here are the findings from your medical bill audit.</p>'
+        '<table width="100%" cellpadding="0" cellspacing="0" style="background:#F0F4F9;border-radius:10px;margin-bottom:32px"><tr>'
+        f'<td width="50%" style="padding:24px 20px;text-align:center;border-right:1px solid #DDE3EE">'
+        f'<div style="font-size:40px;font-weight:700;color:#EF4444">{error_count}</div>'
+        f'<div style="font-size:12px;color:#6B7C93;margin-top:4px;text-transform:uppercase;letter-spacing:0.06em">Billing Error{plural} Found</div>'
+        f'</td>'
+        f'<td width="50%" style="padding:24px 20px;text-align:center">'
+        f'<div style="font-size:40px;font-weight:700;color:#00C9A7">${recovery_fmt}</div>'
+        f'<div style="font-size:12px;color:#6B7C93;margin-top:4px;text-transform:uppercase;letter-spacing:0.06em">Total Recoverable</div>'
+        f'</td></tr></table>'
+        '<h2 style="font-size:16px;font-weight:700;color:#0D1B2A;margin:0 0 14px">Errors Identified</h2>'
+        f'{errors_table}'
+        '<div style="background:#F0F4F9;border-left:4px solid #0C3B6E;padding:16px 20px;border-radius:0 6px 6px 0;margin:0 0 32px">'
+        '<div style="font-size:14px;font-weight:700;color:#0C3B6E;margin-bottom:6px">What Happens Next</div>'
+        '<p style="font-size:13.5px;color:#4A5568;margin:0;line-height:1.6">Each error has a ready-to-send dispute letter below. '
+        'Send them in order, certified mail when possible, and keep copies of everything you submit.</p>'
+        '</div>'
+        '<h2 style="font-size:16px;font-weight:700;color:#0D1B2A;margin:0 0 16px">Your Dispute Letters</h2>'
+        f'{letters_html}'
+        '<div style="border-top:1px solid #EEF2F7;padding-top:20px;margin-top:8px;text-align:center">'
+        '<p style="font-size:12px;color:#9BADC4;margin:0">Generated by MedBill AI by KamSAI Systems · '
+        '<a href="https://mdbillify.netlify.app" style="color:#0C3B6E;text-decoration:none">mdbillify.netlify.app</a></p>'
+        '</div>'
+        '</td></tr></table></td></tr></table></body></html>'
+    )
+
+
+def _build_internal_email_text(
+    bill_id: str,
+    email: str,
+    error_count: int,
+    total_recovery: float,
+    errors: list[dict[str, Any]],
+) -> str:
+    from datetime import datetime, timezone
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    lines = [
+        f"New audit completed — MBI-{bill_id[:8].upper()}",
+        f"Timestamp:      {ts}",
+        f"Bill ID:        {bill_id}",
+        f"Submitted by:   {email}",
+        f"Errors found:   {error_count}",
+        f"Total recovery: ${total_recovery:,.2f}",
+        "",
+        "Errors:",
+    ]
+    for i, err in enumerate(errors, 1):
+        etype = err.get("error_type") or err.get("category") or "Unknown"
+        cpt = err.get("cpt_code") or "—"
+        rec = float(err.get("estimated_recovery") or 0)
+        lines.append(f"  {i}. [{cpt}] {etype} — ${rec:,.2f}")
+    return "\n".join(lines)
+
+
+def _send_audit_emails(
+    bill_id: str,
+    email: str,
+    patient_name: str,
+    error_count: int,
+    total_recovery: float,
+    errors: list[dict[str, Any]],
+    dispute_letters: list[dict[str, Any]],
+) -> None:
+    import sib_api_v3_sdk
+
+    api_key = os.environ.get("BREVO_API_KEY", "").strip()
+    if not api_key:
+        raise RuntimeError("BREVO_API_KEY not configured")
+
+    config = sib_api_v3_sdk.Configuration()
+    config.api_key["api-key"] = api_key
+    brevo = sib_api_v3_sdk.ApiClient(config)
+    api = sib_api_v3_sdk.TransactionalEmailsApi(brevo)
+    sender = {"email": "kameron@kamsaisystems.com", "name": "MedBill AI"}
+    plural = "s" if error_count != 1 else ""
+
+    # Email 1: full audit results to the submitting user
+    subject1 = (
+        f"Your MedBill AI Audit — {error_count} error{plural} found, "
+        f"${total_recovery:,.0f} recoverable"
+    )
+    api.send_transac_email(sib_api_v3_sdk.SendSmtpEmail(
+        to=[{"email": email, "name": patient_name}],
+        sender=sender,
+        subject=subject1,
+        html_content=_build_audit_email_html(
+            patient_name, error_count, total_recovery, errors, dispute_letters
+        ),
+    ))
+
+    # Email 2: internal notification
+    short_id = bill_id[:8].upper()
+    subject2 = (
+        f"New audit completed — MBI-{short_id} | "
+        f"{error_count} error{plural} | ${total_recovery:,.0f} recovery"
+    )
+    api.send_transac_email(sib_api_v3_sdk.SendSmtpEmail(
+        to=[{"email": "kameron@kamsaisystems.com", "name": "Kameron"}],
+        sender=sender,
+        subject=subject2,
+        text_content=_build_internal_email_text(
+            bill_id, email, error_count, total_recovery, errors
+        ),
+    ))
 
 
 # ---------------------------------------------------------------------------
@@ -584,6 +796,57 @@ def dispute(bill_id: str) -> tuple[Response, int] | Response:
         ),
         200,
     )
+
+
+# ---------------------------------------------------------------------------
+# POST /send-report
+# ---------------------------------------------------------------------------
+
+
+@main.post("/send-report")
+def send_report() -> tuple[Response, int]:
+    """
+    Send two emails via Brevo after the full pipeline completes.
+
+    Email 1 → submitting user: full audit results + dispute letters.
+    Email 2 → kameron@kamsaisystems.com: internal audit notification.
+
+    Always returns 200 — Brevo failures are logged but never surfaced to the
+    frontend so the confirmation screen is never blocked.
+
+    JSON body
+    ---------
+    {
+      "bill_id":         "<uuid>",
+      "email":           "patient@example.com",
+      "patient_name":    "Jane Doe",
+      "error_count":     3,
+      "total_recovery":  412.50,
+      "errors":          [ ...BillingError objects... ],
+      "dispute_letters": [ ...DisputeLetter objects... ]
+    }
+    """
+    body: dict[str, Any] = request.get_json(silent=True) or {}
+    bill_id: str = body.get("bill_id", "")
+    email: str = body.get("email", "")
+
+    if not bill_id or not email:
+        return _err("bill_id and email are required.", 400)
+
+    try:
+        _send_audit_emails(
+            bill_id=bill_id,
+            email=email,
+            patient_name=str(body.get("patient_name") or "Valued Patient"),
+            error_count=int(body.get("error_count") or 0),
+            total_recovery=float(body.get("total_recovery") or 0.0),
+            errors=list(body.get("errors") or []),
+            dispute_letters=list(body.get("dispute_letters") or []),
+        )
+    except Exception:
+        current_app.logger.exception("send-report: Brevo delivery failed")
+
+    return jsonify({"sent": True}), 200
 
 
 # ---------------------------------------------------------------------------
