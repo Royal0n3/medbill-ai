@@ -79,24 +79,20 @@ class BillExtraction(BaseModel):
     def coerce_diagnosis_codes(cls, v):
         if v is None:
             return []
+        import re
+        icd_pattern = re.compile(r'^[A-Z][0-9]{1,2}\.?[0-9A-Z]{0,4}$')
         result = []
         for item in v:
             if isinstance(item, dict):
-                # Try every key name Claude might use for the actual ICD code
-                code = (
-                    item.get("code") or
-                    item.get("icd_code") or
-                    item.get("icd10") or
-                    item.get("icd_10") or
-                    item.get("icd10_code") or
-                    item.get("diagnosis_code") or
-                    ""
-                )
-                # Validate it looks like an actual ICD code (short, not a description)
-                if code and len(str(code).strip()) <= 10:
-                    result.append(str(code).strip())
-            elif item is not None:
-                result.append(str(item))
+                found = None
+                for val in item.values():
+                    if isinstance(val, str) and icd_pattern.match(val.strip()):
+                        found = val.strip()
+                        break
+                if found:
+                    result.append(found)
+            elif isinstance(item, str) and item.strip():
+                result.append(item.strip())
         return result
 
     @field_validator("service_lines", mode="before")
