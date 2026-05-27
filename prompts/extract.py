@@ -82,10 +82,19 @@ class BillExtraction(BaseModel):
         result = []
         for item in v:
             if isinstance(item, dict):
-                # Claude sometimes returns {"code": "R07.9", "sequence": 1, "primary": True}
-                code = item.get("code") or item.get("icd_code") or item.get("icd10") or ""
-                if code:
-                    result.append(str(code))
+                # Try every key name Claude might use for the actual ICD code
+                code = (
+                    item.get("code") or
+                    item.get("icd_code") or
+                    item.get("icd10") or
+                    item.get("icd_10") or
+                    item.get("icd10_code") or
+                    item.get("diagnosis_code") or
+                    ""
+                )
+                # Validate it looks like an actual ICD code (short, not a description)
+                if code and len(str(code).strip()) <= 10:
+                    result.append(str(code).strip())
             elif item is not None:
                 result.append(str(item))
         return result
