@@ -279,7 +279,8 @@ def generate_dispute_letters(
         )
 
     if client is None:
-        client = anthropic.Anthropic()
+        import os
+        client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY", "").strip())
 
     schema_json = json.dumps(DisputePackage.model_json_schema(), indent=2)
     system_prompt = _build_system_prompt(_REGULATORY_CONTEXT, schema_json)
