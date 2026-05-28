@@ -180,7 +180,7 @@ _REGULATORY_CONTEXT = {
 # System prompt
 # ---------------------------------------------------------------------------
 
-def _build_system_prompt(regulatory_map: dict) -> str:
+def _build_system_prompt(regulatory_map: dict, schema_json: str) -> str:
     reg_lines = "\n".join(
         f"  {k.value}: {v}" for k, v in regulatory_map.items()
     )
@@ -235,9 +235,14 @@ SEND-TO ROUTING GUIDE
 
 OUTPUT REQUIREMENTS
 ───────────────────
-Return ONLY valid JSON matching the DisputePackage schema.
+Return ONLY valid JSON matching EXACTLY the DisputePackage schema below.
+Use the exact field names from the schema — do not rename or omit required fields.
 The letter_text field must be complete — no "[insert X here]" placeholders.
 Letters must be ordered in priority_order by (estimated_recovery DESC, deadline urgency DESC).
+
+EXACT OUTPUT SCHEMA (use these field names verbatim)
+─────────────────────────────────────────────────────
+{schema_json}
 """
 
 
@@ -275,7 +280,8 @@ def generate_dispute_letters(
     if client is None:
         client = anthropic.Anthropic()
 
-    system_prompt = _build_system_prompt(_REGULATORY_CONTEXT)
+    schema_json = json.dumps(DisputePackage.model_json_schema(), indent=2)
+    system_prompt = _build_system_prompt(_REGULATORY_CONTEXT, schema_json)
 
     # Build context block
     today = date.today().strftime("%B %d, %Y")
@@ -316,24 +322,20 @@ def generate_dispute_letters(
         "Do not use any placeholders — every field must be populated."
     )
 
-    # Use streaming for potentially long letter generation
     full_text_parts: list[str] = []
     with client.messages.stream(
         model="claude-opus-4-6",
         max_tokens=16000,
         system=system_prompt,
         messages=[{"role": "user", "content": user_message}],
-        output_config={
-            "format": {
-                "type": "json_schema",
-                "schema": DisputePackage.model_json_schema(),
-            }
-        },
     ) as stream:
         for chunk in stream.text_stream:
             full_text_parts.append(chunk)
 
-    raw_json = "".join(full_text_parts)
+    raw_json = "".join(full_text_parts).strip()
+    if raw_json.startswith("```"):
+        raw_json = raw_json.split("\n", 1)[-1]
+        raw_json = raw_json.rsplit("```", 1)[0].strip()
     return DisputePackage.model_validate_json(raw_json)
 
 
