@@ -100,7 +100,14 @@ class DisputeLetter(BaseModel):
 
 
 class DisputePackage(BaseModel):
-    letters: list[DisputeLetter] = Field(default_factory=list)
+    letters: list[DisputeLetter] = Field(
+        default_factory=list,
+        description=(
+            "One complete DisputeLetter per billing error. "
+            "This array MUST contain exactly as many entries as there are errors in the input — "
+            "never empty if errors were provided."
+        ),
+    )
     priority_order: list[str] = Field(
         default_factory=list,
         description=(
@@ -236,9 +243,12 @@ SEND-TO ROUTING GUIDE
 OUTPUT REQUIREMENTS
 ───────────────────
 Return ONLY valid JSON matching EXACTLY the DisputePackage schema below.
-Use the exact field names from the schema — do not rename or omit required fields.
+Use the exact field names from the schema — do not rename or omit any fields.
+You MUST generate exactly one DisputeLetter for EVERY billing error provided — the letters \
+array must never be empty when errors are present.
 The letter_text field must be complete — no "[insert X here]" placeholders.
-Letters must be ordered in priority_order by (estimated_recovery DESC, deadline urgency DESC).
+The letters array must be ordered by (estimated_recovery DESC, deadline urgency DESC).
+The priority_order array must list the subject_line of each letter in the same order as letters.
 
 EXACT OUTPUT SCHEMA (use these field names verbatim)
 ─────────────────────────────────────────────────────
@@ -316,9 +326,12 @@ def generate_dispute_letters(
     )
 
     user_message = (
-        "Generate professional dispute letters for each of the following billing errors.\n\n"
+        f"Generate {len(errors)} professional dispute letters — one for EACH of the "
+        f"{len(errors)} billing error(s) listed below. "
+        "The letters array in your JSON response must contain exactly "
+        f"{len(errors)} DisputeLetter object(s).\n\n"
         f"--- PATIENT INFORMATION ---\n{patient_block}{bill_block}\n\n"
-        f"--- BILLING ERRORS (JSON) ---\n{errors_json}\n--- END ERRORS ---\n\n"
+        f"--- BILLING ERRORS (JSON) — {len(errors)} error(s) ---\n{errors_json}\n--- END ERRORS ---\n\n"
         "Write one complete, ready-to-send dispute letter per error. "
         "Use the patient's real name, address, and insurance ID in each letter. "
         "Do not use any placeholders — every field must be populated."

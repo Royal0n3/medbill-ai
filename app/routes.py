@@ -720,6 +720,10 @@ def dispute(bill_id: str) -> tuple[Response, int] | Response:
     analysis = AnalysisResult.model_validate_json(err_row["analysis_json"])
 
     # --- Call Claude --------------------------------------------------------
+    current_app.logger.info(
+        "Generating dispute letters for bill %s: %d error(s) to dispute",
+        bill_id, len(analysis.errors),
+    )
     try:
         package: DisputePackage = generate_dispute_letters(
             analysis.errors,
@@ -729,6 +733,10 @@ def dispute(bill_id: str) -> tuple[Response, int] | Response:
     except Exception:
         current_app.logger.exception("Claude dispute generation failed")
         return _err("Dispute generation service unavailable. Try again shortly.", 502)
+    current_app.logger.info(
+        "Dispute generation complete for bill %s: %d letter(s) generated",
+        bill_id, len(package.letters),
+    )
 
     # --- Persist ------------------------------------------------------------
     dispute_id = str(uuid.uuid4())
