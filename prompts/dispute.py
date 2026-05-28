@@ -184,7 +184,7 @@ def _build_system_prompt(regulatory_map: dict, schema_json: str) -> str:
     reg_lines = "\n".join(
         f"  {k.value}: {v}" for k, v in regulatory_map.items()
     )
-    return f"""You are a patient billing advocate and paralegal specialising in healthcare \
+    prompt = f"""You are a patient billing advocate and paralegal specialising in healthcare \
 dispute resolution. You write clear, firm, professional dispute letters on behalf of patients \
 that have been incorrectly billed.
 
@@ -242,8 +242,9 @@ Letters must be ordered in priority_order by (estimated_recovery DESC, deadline 
 
 EXACT OUTPUT SCHEMA (use these field names verbatim)
 ─────────────────────────────────────────────────────
-{schema_json}
+SCHEMA_PLACEHOLDER
 """
+    return prompt.replace("SCHEMA_PLACEHOLDER", schema_json)
 
 
 # ---------------------------------------------------------------------------
