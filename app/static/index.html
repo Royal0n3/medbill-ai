@@ -1022,9 +1022,9 @@
     if (errors.length > 0) {
       const bd = document.getElementById('errorsBreakdown');
       bd.innerHTML = errors.map(err => {
-        const cpt  = err.cpt_code || '—';
-        const type = err.error_type || err.category || 'Error';
-        const rec  = err.estimated_recovery || 0;
+        const cpt  = (err.affected_cpt_codes && err.affected_cpt_codes.length) ? err.affected_cpt_codes[0] : (err.cpt_code || '—');
+        const type = (err.error_type || err.category || 'Error').replace(/_/g, ' ');
+        const rec  = err.estimated_recovery_amount || err.estimated_recovery || 0;
         return `<div class="error-item">
           <div class="error-item-left">
             <span class="error-cpt">${escHtml(cpt)}</span>
