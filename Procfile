@@ -1,1 +1,1 @@
-web: gunicorn "app:create_app()"
+web: gunicorn --timeout 300 --workers 2 "app:create_app()"
