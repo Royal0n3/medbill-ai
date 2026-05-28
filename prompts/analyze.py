@@ -183,12 +183,17 @@ CONFIDENCE SCORING GUIDE
 
 OUTPUT REQUIREMENTS
 ───────────────────
-• Return ONLY valid JSON matching the AnalysisResult schema.
+• Return ONLY valid JSON matching EXACTLY the AnalysisResult schema below.
 • Do not include errors with confidence < 0.5 unless estimated_recovery > $500.
 • Sort errors by estimated_recovery_amount descending.
 • Every error MUST include supporting_evidence quoting specific data from the input.
 • total_estimated_recovery must equal the sum of all errors' estimated_recovery_amount.
 • No hallucination: do not invent errors that are not supported by the provided data.
+• Use the exact field names from the schema — do not rename or omit required fields.
+
+EXACT OUTPUT SCHEMA (use these field names verbatim)
+─────────────────────────────────────────────────────
+{schema_placeholder}
 """
 
 # ---------------------------------------------------------------------------
@@ -234,10 +239,13 @@ def analyze_bill(
         f"{eob_section}"
     )
 
+    schema_json = json.dumps(AnalysisResult.model_json_schema(), indent=2)
+    system_with_schema = SYSTEM_PROMPT.replace("{schema_placeholder}", schema_json)
+
     response = client.messages.create(
         model="claude-opus-4-6",
         max_tokens=8192,
-        system=SYSTEM_PROMPT,
+        system=system_with_schema,
         messages=[{"role": "user", "content": user_message}],
     )
 
